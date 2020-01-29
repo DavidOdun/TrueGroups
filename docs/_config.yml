@@ -20,8 +20,8 @@ plugins:
 - jekyll-remote-theme
 
 # Site settings
-url: 'https://mydomain.com'
-baseurl: ''
+url: 'https://davidodun.github.io'
+baseurl: '/TrueGroups'
 title: 'My website'
 description: 'This is my new website'
 permalink: pretty
