@@ -22,10 +22,10 @@ plugins:
 # Site settings
 url: 'https://davidodun.github.io'
 baseurl: '/TrueGroups'
-title: 'My website'
-description: 'This is my new website'
+title: 'TrueGroups'
+description: 'A revolutionary unbiased group matchmaking platform.'
 permalink: pretty
-logo: "https://www.gravatar.com/avatar/6c0377abcf4da91cdd35dea4554b2a4c?s=52"
+logo: "/assets/images/full_logo.png"
 
 # Pagination
 paginate: 5
@@ -37,6 +37,8 @@ navigation_header:
   url: /
 - title: About
   url: /about/
+- title: Docs
+  url: /docs/
 - title: Blog
   url: /blog/
 
@@ -48,9 +50,8 @@ navigation_footer:
 # Collections
 collections:
   posts:
-    title: Posts
+    title: Blog Posts
     output: true
-    description: "My thoughts and ideas"
-    feature_text: |
-      Welcome to my blog
+    description: "Updates and Milestones"
+    feature_text:
     feature_image: "https://picsum.photos/2560/600?image=866"

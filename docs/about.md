@@ -1,6 +1,16 @@
 ---
 layout: page
-title: About this website
+title: About TrueGroups
 ---
 
-I'm not sure yet what this website is about, but I'm sure I'll work it out soon.
+## Functionality
+*Add what it can do*
+
+## Technical Architecture
+*Add all of this stuff too*
+
+## The Team
+*Talk about each of us*
+
+## Channels?
+*Embed Gitter and Trello and whatnot*
