@@ -39,6 +39,8 @@ const deleteTableData = (req, res, db) => {
       })
       .catch(err => res.status(400).json({dbError: 'db error'}))
 }
+
+// Fake Writing
   
 module.exports = {
     getTableData,
