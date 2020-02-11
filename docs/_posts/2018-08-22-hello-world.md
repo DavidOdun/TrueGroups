@@ -1,9 +1,10 @@
 ---
 layout: post
-title: Hello World
+title: General Announcement
 categories:
 - General
 feature_image: "https://picsum.photos/2560/600?image=872"
 ---
 
-This is my very first blog post. I haven't written anything yet but I'm sure I have some great stories to tell.
+This is TrueGroups, and we are helping to make better groups that are aligned to bring out the best in ever member and 
+maximize productivity.
