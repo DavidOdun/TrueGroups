@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
-import HomePage from './components/HomePage';
 
 /* Starting Home Page */
 class App extends Component {
@@ -24,7 +23,6 @@ class App extends Component {
         this.state.hello
           ? <div> {this.state.hello} </div>
           : null }
-        < HomePage />
       </div>
 
     );
