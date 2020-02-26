@@ -6,9 +6,10 @@ import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 //import HomePage from './components/HomePage';
-import SignUpPage from './components/SignUpPage';
+//import SignUpPage from './components/SignUpPage';
+import SignInPage from './components/SignInPage';
 
-ReactDOM.render(<SignUpPage />, document.getElementById('root'));
+ReactDOM.render(<SignInPage />, document.getElementById('root'));
 
 //ReactDOM.render(<App />, document.getElementById('root'));
 
