@@ -66,7 +66,7 @@ class SignUpPage extends Component {
                             <option>Saint Mary's College</option>
                         </Input>
                     </FormGroup>
-                    <Button>Submit</Button>
+                    <Button color="primary" size="lg" block>Submit</Button>
                 </Form>
                 </div>
             </div>
