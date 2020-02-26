@@ -5,8 +5,10 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-import HomePage from './components/HomePage';
-ReactDOM.render(<HomePage />, document.getElementById('root'));
+//import HomePage from './components/HomePage';
+import SignUpPage from './components/SignUpPage';
+
+ReactDOM.render(<SignUpPage />, document.getElementById('root'));
 
 //ReactDOM.render(<App />, document.getElementById('root'));
 
