@@ -21,8 +21,8 @@ class HomePage extends Component {
                     </a>
                     <h1>Welcome to True Groups</h1>
                     <div>
-                        <Button size="lg" color="primary" onClick={() => this.handleButtonPress("./signin")}> Register</Button>{' '}
-                        <Button size="lg" color="secondary" onClick={() => this.handleButtonPress("./signup")}> Login </Button>
+                        <Button size="lg" color="primary" onClick={() => this.handleButtonPress("./signup")}> Register</Button>{' '}
+                        <Button size="lg" color="secondary" onClick={() => this.handleButtonPress("./signin")}> Login </Button>
                     </div>
                 </nav>
                 <div className="row justify-content-center">
