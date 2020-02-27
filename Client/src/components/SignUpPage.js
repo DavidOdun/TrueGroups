@@ -23,7 +23,7 @@ class SignUpPage extends Component {
       return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
-                    <a className="navbar-brand" href="#">
+                    <a className="navbar-brand" href="/">
                         <img src="/TrueGroupLogo.png" width="150" height="150" alt="True Group Company Logo">
                         </img>
                     </a>
