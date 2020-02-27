@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
 
 class SignUpPage extends Component {
     state = {
@@ -23,9 +23,12 @@ class SignUpPage extends Component {
       return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
-                    <a className="navbar-brand" href="/">
+                    <a className="navbar-brand" href="/" id="UncontrolledTooltipExample">
                         <img src="/TrueGroupLogo.png" width="150" height="150" alt="True Group Company Logo">
                         </img>
+                        <UncontrolledTooltip placement="right" target="UncontrolledTooltipExample">
+                            Click to return Home
+                        </UncontrolledTooltip>
                     </a>
                     <h1>True Groups</h1>
                     <div></div>

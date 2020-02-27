@@ -1,31 +1,28 @@
 import React, { Component } from 'react';
-import { Button} from 'reactstrap';
+import {withRouter} from 'react-router-dom';
+import { Button, UncontrolledTooltip} from 'reactstrap';
 
 class HomePage extends Component {
-    state = {
-      homePageData: null
+    handleButtonPress(value)
+    {
+        this.props.history.push(value);
     }
-  
-    componentDidMount(){
-       /* Make Axios Call to Express BackEnd 
-      axios.get('/hello')
-        .then(res => this.setState({hello: res.data}))
-        .catch(err => console.log(err))
-        */
-    }
-  
+
     render() {
       return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
-                    <a className="navbar-brand" href="/">
+                    <a className="navbar-brand" href="/" id="UncontrolledTooltipExample">
                         <img src="/TrueGroupLogo.png" width="150" height="150" alt="True Group Company Logo">
                         </img>
+                        <UncontrolledTooltip placement="right" target="UncontrolledTooltipExample">
+                            Click to return Home
+                        </UncontrolledTooltip>
                     </a>
                     <h1>Welcome to True Groups</h1>
                     <div>
-                        <Button size="lg" color="primary"> Register</Button>{' '}
-                        <Button size="lg" color="secondary"> Login </Button>
+                        <Button size="lg" color="primary" onClick={() => this.handleButtonPress("./signin")}> Register</Button>{' '}
+                        <Button size="lg" color="secondary" onClick={() => this.handleButtonPress("./signup")}> Login </Button>
                     </div>
                 </nav>
                 <div className="row justify-content-center">
@@ -42,5 +39,5 @@ class HomePage extends Component {
     }
   }
   
-  export default HomePage;
+  export default withRouter(HomePage);
   
