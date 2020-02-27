@@ -2,8 +2,13 @@ import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
 
 class SignInPage extends Component {
-    state = {
-      signInPageData: null
+    constructor(props)
+    {
+        super(props)
+        this.state = {
+            username: " ",
+            password: " "
+        }
     }
   
     componentDidMount(){
@@ -15,13 +20,16 @@ class SignInPage extends Component {
     }
     /* 
         ToDo:
-        1. Save the user input as a part of this components state
-        2. Display User Entry on Button Press
+        1. Save the user input as a part of this components state: Done
+        2. Display User Entry on Button Press (For Testing): Done
         3. On Button Click: Verify correctness of login information
-            a. Redirect to new page on button pressed
+            - Important Bug: Do not display the user name and password on submit
+            a. Redirect to new page (Class Info) on button pressed
             b. Notify and redirect to current page on failed login
     */
     render() {
+        console.log("Showing State for the user")
+        console.log(this.state)
       return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
@@ -39,11 +47,11 @@ class SignInPage extends Component {
                     <Form>
                         <FormGroup>
                             <Label for="exampleUsername">Username</Label>
-                            <Input type="username" name="usernmae" id="exampleUsername" placeholder="username" />
+                            <Input type="username" name="usernmae" id="exampleUsername" onChange={(e) => this.setState({username: e.target.value})} placeholder="username" />
                         </FormGroup>
                         <FormGroup>
                             <Label for="examplePassword">Password</Label>
-                            <Input type="password" name="password" id="examplePassword" placeholder="strong password" />
+                            <Input type="password" name="password" id="examplePassword" onChange={(e) => this.setState({password: e.target.value})} placeholder="strong password" />
                         </FormGroup>
                         <Button color="primary" size="lg" block>Login</Button>
                     </Form>

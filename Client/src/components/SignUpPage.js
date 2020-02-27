@@ -23,6 +23,11 @@ class SignUpPage extends Component {
         .catch(err => console.log(err))
         */
     }
+
+    validateFormInput()
+    {
+
+    }
     /* 
         ToDo:
         1. Save the user input as a part of this components state
@@ -82,7 +87,7 @@ class SignUpPage extends Component {
                             <option>Saint Mary's College</option>
                         </Input>
                     </FormGroup>
-                    <Button color="primary" size="lg" block>Submit</Button>
+                    <Button color="primary" size="lg" onClick={() => this.validateFormInput()} block>Submit</Button>
                 </Form>
                 </div>
             </div>

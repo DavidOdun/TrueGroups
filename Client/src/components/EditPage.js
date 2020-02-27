@@ -2,8 +2,16 @@ import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
 
 class EditPage extends Component {
-    state = {
-      EditPageData: null
+    constructor(props)
+    {
+        super(props)
+        this.state = {
+            email: " ",
+            username: " ",
+            password: " ",
+            prefferedname: " ",
+            institution: " "
+        }
     }
   
     componentDidMount(){
@@ -40,23 +48,23 @@ class EditPage extends Component {
                 <Form>
                     <FormGroup>
                         <Label for="exampleEmail">Email</Label>
-                        <Input type="email" name="email" id="exampleEmail" placeholder="example@example.com" />
+                        <Input type="email" name="email" id="exampleEmail" onChange={(e) => this.setState({email: e.target.value})} placeholder="example@example.com" />
                     </FormGroup>
                     <FormGroup>
                         <Label for="exampleUsername">Username</Label>
-                        <Input type="username" name="usernmae" id="exampleUsername" placeholder="username" />
+                        <Input type="username" name="usernmae" id="exampleUsername" onChange={(e) => this.setState({username: e.target.value})} placeholder="username" />
                     </FormGroup>
                     <FormGroup>
                         <Label for="examplePassword">Password</Label>
-                        <Input type="password" name="password" id="examplePassword" placeholder="strong password" />
+                        <Input type="password" name="password" id="examplePassword" onChange={(e) => this.setState({password: e.target.value})} placeholder="strong password" />
                     </FormGroup>
                     <FormGroup>
                         <Label for="examplePrefferedName">Preffered Name</Label>
-                        <Input type="prefferedname" name="prefferedname" id="examplePrefferedname" placeholder="prefferred name" />
+                        <Input type="prefferedname" name="prefferedname" id="examplePrefferedname" onChange={(e) => this.setState({prefferedname: e.target.value})} placeholder="prefferred name" />
                     </FormGroup>       
                     <FormGroup>
                         <Label for="exampleSelect">Institution</Label>
-                        <Input type="select" name="select" id="exampleSelect">
+                        <Input type="select" name="select" id="exampleSelect" onChange={(e) => this.setState({institution: e.target.value})}>
                             <option>University of Notre Dame</option>
                             <option>Holy Cross College</option>
                             <option>Michigan State</option>
