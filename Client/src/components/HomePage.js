@@ -18,7 +18,7 @@ class HomePage extends Component {
       return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
-                    <a className="navbar-brand" href="#">
+                    <a className="navbar-brand" href="/">
                         <img src="/TrueGroupLogo.png" width="150" height="150" alt="True Group Company Logo">
                         </img>
                     </a>
@@ -28,12 +28,12 @@ class HomePage extends Component {
                         <Button size="lg" color="secondary"> Login </Button>
                     </div>
                 </nav>
-                <div class="row justify-content-center">
-                    <div class="col">
+                <div className="row justify-content-center">
+                    <div className="col">
                         One of two columns
                     </div>
-                    <div class="col">
-                        <img src="/StudentsWorking.jpg" class="img-fluid" alt="Responsive image">
+                    <div className="col">
+                        <img src="/StudentsWorking.jpg" className="img-fluid" alt="Student working around computer">
                         </img>                          
                     </div>
                 </div>
