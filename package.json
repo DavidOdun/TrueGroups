@@ -2,7 +2,7 @@
   "//1": "describes your app and its dependencies",
   "//2": "https://docs.npmjs.com/files/package.json",
   "//3": "updating this file will download and update your packages",
-  "name": "hello-express",
+  "name": "true-groups",
   "version": "0.0.1",
   "description": "A web app for creating the truest of groups.",
   "main": "server.js",
@@ -16,12 +16,20 @@
     "node": "10.x"
   },
   "repository": {
-    "url": "https://github.com/DavidOdun/TrueGroups.git"
+    "url": "git+https://github.com/DavidOdun/TrueGroups.git"
   },
   "license": "MIT",
   "keywords": [
     "node",
     "glitch",
     "express"
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/DavidOdun/TrueGroups/issues"
+  },
+  "homepage": "https://github.com/DavidOdun/TrueGroups#readme",
+  "directories": {
+    "doc": "docs"
+  },
+  "author": "TrueGroups"
 }
