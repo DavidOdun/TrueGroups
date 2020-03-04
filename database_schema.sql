@@ -19,7 +19,7 @@ CREATE TABLE student_responses (
 );
 
 CREATE TABLE questions (
-  question_id int PRIMARY KEY,
+  question_id SERIAL PRIMARY KEY,
   question_string varchar(255)
 );
 
