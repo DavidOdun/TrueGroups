@@ -5,6 +5,7 @@ var pool = require('./db');
 // Controllers - The db queries
 const userHandler = require('./components/userHandler');
 const classHandler = require('./components/classHandler');
+const questionHandler = require('./components/questionsHandler');
 
 // Database Connection with localhost
 var db = require('knex')({
@@ -17,20 +18,20 @@ var db = require('knex')({
     }
 });
 
-/* 
+/*
     API POST ROUTES BELOW
 */
-router.get('/hello', function (req, res) {
+router.get('/api/hello', function (req, res) {
     res.json('hello world')
-})
+});
 
 // API Endpoints
 // User Related
 router.put('/api/v1/users/create', (req, res) => userHandler.createUser(req, res, db));
 router.post('/api/v1/users/authenticate', (req, res) => userHandler.authenticateUser(req, res, db));
-router.post('/api/v1/users/:userId/basic', (req, res) => userHandler.updateBasicUserInfo(req, res, db));
-router.post('/api/v1/users/:userId/survey', (req, res) => userHandler.updateSurveyUserInfo(req, res, db));
-router.get('/api/v1/users/:userId', (req, res) => userHandler.getUserInformation(req, res, db));
+router.get('/api/v1/users/get/:user_name', (req, res) => userHandler.getUser(req, res, db));
+router.post('/api/v1/users/update/basic/:user_name', (req, res) => userHandler.updateBasicUserInfo(req, res, db));
+router.post('/api/v1/users/update/survey/:user_name', (req, res) => userHandler.updateSurveyUserInfo(req, res, db));
 
 // Class and Group Related
 router.put('/api/v1/classes/create', (req, res) => classHandler.createClass(req, res, db));
@@ -38,7 +39,13 @@ router.post('/api/v1/classes/join', (req, res) => classHandler.joinClass(req, re
 router.get('/api/v1/classes/enrolled/:userId', (req, res) => classHandler.getUserEnrolledClasses(req, res, db));
 router.get('/api/v1/classes/details/:classId/', (req, res) => classHandler.getClassDetails(req, res, db));
 router.get('/api/v1/classes/makeGroup/:classId', (req, res) => classHandler.createGroups(req, res, db));
-router.get('/api/v1/classes/allGroups/:classId', (req, res) => classHandler.getAllClassGroups(req, res, db));
+router.get('/api/v1/classes/allGroups/:classId', (req, res) => classHandler.getAllClassesGroups(req, res, db));
 router.get('/api/v1/classes/students/:classId/:studentId', (req, res) => classHandler.getStudentsClassGroup(req, res, db));
 router.post('/api/v1/classes/delete', (req, res) => classHandler.deleteClass(req, res, db));
-module.exports = router
+
+// Questions Related
+router.post('/api/v1/questions/add', (req, res) => questionHandler.addQuestion(req, res, db));
+router.get('/api/v1/questions/all', (req, res) => questionHandler.getAllQuestions(req, res, db));
+router.post('/api/v1/questions/remove/:question_id', (req, res) => questionHandler.removeQuestion(req, res, db));
+
+module.exports = router;

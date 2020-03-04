@@ -1,4 +1,5 @@
 let QUESTIONS_TABLE = 'questions';
+
 const addQuestion = (req, res, db) => {
     const { question_string } = req.body;
     db(QUESTIONS_TABLE).insert({ question_string })
@@ -18,7 +19,7 @@ const getAllQuestions = (req, res, db) => {
 };
 
 const removeQuestion = (req, res, db) => {
-    const { question_id } = req.body;
+    const { question_id } = req.params;
     //First check to see if user already exists
     db.from(QUESTIONS_TABLE).select('*').where('question_id', '=', question_id)
         .then((rows) => {
@@ -31,6 +32,7 @@ const removeQuestion = (req, res, db) => {
         })
         .catch(err => res.status(400).json({dbError: 'db error: ' + err}));
 };
+
 
 module.exports = {
     addQuestion,
