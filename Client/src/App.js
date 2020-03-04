@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
-import './App.css';
+import { 
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom"
 import axios from 'axios';
+import './App.css';
+import HomePage from './components/HomePage';
+import SignUpPage from './components/SignUpPage';
+import SignInPage from './components/SignInPage';
+import EditPage from './components/EditPage';
 
 /* Starting Home Page */
 class App extends Component {
@@ -18,12 +27,22 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-      {
-        this.state.hello
-          ? <div> {this.state.hello} </div>
-          : null }
-      </div>
+      <Router>
+        <Switch>
+          <Route exact path ="/">
+            <HomePage />
+          </Route>
+          <Route path ="/signin">
+            <SignInPage />
+          </Route>
+          <Route path ="/signup">
+            <SignUpPage />
+          </Route>
+          <Route path ="/editprofile">
+            <EditPage />
+          </Route>
+        </Switch>
+      </Router>
     );
   }
 }
