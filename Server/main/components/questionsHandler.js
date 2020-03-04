@@ -2,7 +2,7 @@ let QUESTIONS_TABLE = 'questions';
 
 const addQuestion = (req, res, db) => {
     const { question_string } = req.body;
-    db(QUESTIONS_TABLE).insert({ question_string })
+    db(QUESTIONS_TABLE).insert({ question_string: question_string })
         .returning('*')
         .then(item => {
             res.json(item)
@@ -21,10 +21,15 @@ const getAllQuestions = (req, res, db) => {
 const removeQuestion = (req, res, db) => {
     const { question_id } = req.params;
     //First check to see if user already exists
-    db.from(QUESTIONS_TABLE).select('*').where('question_id', '=', question_id)
+    db.from(QUESTIONS_TABLE).select('*').where({question_id: question_id})
         .then((rows) => {
             if (rows.length !== 0) {
-                db.from(QUESTIONS_TABLE).where('question_id', '=', question_id).del()
+                db.from(QUESTIONS_TABLE).where({question_id: question_id}).del()
+                    .then((rows) => {
+                        res.json({success: "rows deleted: " + rows})
+                    })
+                    .catch( err => res.json({dbError: err}))
+
             } else {
                 // If user does exist, do not create new user.
                 res.json({dbError: 'Question does not exist'})
