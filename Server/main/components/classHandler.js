@@ -4,16 +4,17 @@ let GROUPS_TABLE = "groups";
 let GROUP_MEMBERS_TABLE = "group_members";
 
 const createClass = (req, res, db) => {
-    const { professor_id, class_name, max_members } = req.body;
+    const {professor_id, class_name, max_members} = req.body;
     //First check to see if user already exists
-    db.from(CLASSES_TABLE).select('*').where('email', '=', email)
+    db.from(CLASSES_TABLE).select('*').where({professor_id: professor_id, class_name: class_name})
         .then((rows) => {
             if (rows.length === 0) {
-                // If user does not exist, create new user.
-                let password = raw_password;
-                const added = new Date();
-                db(TABLE).insert({ title, first_name, last_name, preferred_first_name, user_name,
-                    email, password, user_type, institution, added})
+                // If class does not exist, create new class.
+                let created_at = new Date();
+                db(CLASSES_TABLE).insert({
+                    professor_id: professor_id, class_name: class_name,
+                    max_members: max_members, created_at: created_at
+                })
                     .returning('*')
                     .then(item => {
                         res.json(item)
@@ -21,26 +22,34 @@ const createClass = (req, res, db) => {
                     .catch(err => res.status(400).json({dbError: 'Error inserting the user in the db'}))
             } else {
                 // If user does exist, do not create new user.
-                res.json({dbError: 'User already Exists'})
+                res.json({dbError: 'Class already Exists'})
             }
         })
         .catch(err => {
-            res.status(400).json({dbError: 'Error finding with connecting to the db'})});
+            res.status(400).json({dbError: 'Error connecting to the db'})
+        });
 };
 
 const joinClass = (req, res, db) => {
-    const { professor_id, class_name, user_id } = req.body;
+    const {professor_id, class_name, user_id} = req.body;
 
     //First check to see if user already exists
-    db.from(CLASSES_TABLE).select('*').where({professor_id: professor_id, class_name:  class_name})
+    db.from(CLASSES_TABLE).select('*').where({professor_id: professor_id, class_name: class_name})
         .then((rows) => {
             if (rows.length > 0) {
                 // If class does exist.
-                let class_id = rows[0]['class_id'];
-                db(CLASS_MEMBERS_TABLE).insert({ "class_id": class_id, "member_id": user_id })
+                let classCode = rows[0].class_code;
+                var current_member = rows[0].current_members;
+                db(CLASS_MEMBERS_TABLE).insert({"class_code": classCode, "member_id": user_id})
                     .returning('*')
-                    .then(item => {
-                        res.json(item)
+                    .then(classMembersItem => {
+                        current_member += 1;
+                        db(CLASSES_TABLE).update({current_members: current_member}).where({professor_id: professor_id, class_name: class_name})
+                            .returning('*')
+                            .then(classTableItem => {
+                                res.json(classMembersItem + classTableItem)
+                            })
+                            .catch(err => res.status(400).json({dbError: 'Error inserting the user in the class'}))
                     })
                     .catch(err => res.status(400).json({dbError: 'Error inserting the user in the class'}))
             } else {
@@ -49,12 +58,13 @@ const joinClass = (req, res, db) => {
             }
         })
         .catch(err => {
-            res.status(400).json({dbError: 'Error finding with connecting to the db'})});
+            res.status(400).json({dbError: 'Error finding with connecting to the db'})
+        });
 
 };
 
 const getUserEnrolledClasses = (req, res, db) => {
-    const { user_id } = req.body;
+    const {user_id} = req.body;
 
     //First check to see if user already exists
     db.from(CLASS_MEMBERS_TABLE).select('*').where({member_id: user_id})
@@ -70,7 +80,8 @@ const getUserEnrolledClasses = (req, res, db) => {
             }
         })
         .catch(err => {
-            res.status(400).json({dbError: 'Error connecting to the db'})});
+            res.status(400).json({dbError: 'Error connecting to the db'})
+        });
 };
 
 const getClassDetails = (req, res, db) => {
