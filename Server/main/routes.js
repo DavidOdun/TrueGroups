@@ -7,15 +7,15 @@ const userHandler = require('./components/userHandler');
 const classHandler = require('./components/classHandler');
 const questionHandler = require('./components/questionsHandler');
 
-// Database Connection with localhost
-var db = require('knex')({
-    client: 'pg',
-    connection: {
-        host: '127.0.0.1',
-        user: '',
-        password: '',
-        database: 'crud-practice-1'
-    }
+let db = require('knex')({
+  client: 'pg',
+  version: '12.1',
+  connection: {
+    host : '127.0.0.1',
+    user : '',
+    password : '',
+    database : 'truegroups'
+  }
 });
 
 /*

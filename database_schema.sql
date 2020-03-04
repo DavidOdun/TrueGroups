@@ -13,7 +13,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE student_responses (
-  id serial PRIMARY KEY,
+  id int PRIMARY KEY,
   question_id int,
   response varchar(255)
 );
@@ -33,7 +33,7 @@ CREATE TABLE classes (
 );
 
 CREATE TABLE class_members (
-  class_code serial PRIMARY KEY,
+  class_code int PRIMARY KEY,
   member_id int
 );
 
