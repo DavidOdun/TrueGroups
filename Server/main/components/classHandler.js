@@ -19,7 +19,7 @@ const createClass = (req, res, db) => {
                     .then(item => {
                         res.json(item)
                     })
-                    .catch(err => res.status(400).json({dbError: 'Error inserting the user in the db'}))
+                    .catch(err => res.status(400).json({dbError: err}))
             } else {
                 // If user does exist, do not create new user.
                 res.json({dbError: 'Class already Exists'})
@@ -64,28 +64,25 @@ const joinClass = (req, res, db) => {
 };
 
 const getUserEnrolledClasses = (req, res, db) => {
-    const {user_id} = req.body;
+    const {user_id} = req.params;
 
     //First check to see if user already exists
     db.from(CLASS_MEMBERS_TABLE).select('*').where({member_id: user_id})
         .then((rows) => {
             if (rows.length > 0) {
-                var classes = [];
-                for (let row in rows) {
-                    classes.push(row['class_id']);
-                }
-                res.json(classes)
+                res.json(rows)
             } else {
                 res.json({error: "The user is not enrolled in any classes"})
             }
         })
         .catch(err => {
+            console.log("err:" + user_id);
             res.status(400).json({dbError: err})
         });
 };
 
 const getClassDetails = (req, res, db) => {
-    const {class_code} = req.body;
+    const {class_code} = req.params;
         //First check to see if user already exists
     db.from(CLASSES_TABLE).select('*').where({class_code: class_code})
         .then((rows) => {
@@ -93,10 +90,13 @@ const getClassDetails = (req, res, db) => {
                 // If user does exist, do not create new user.
                 res.json({dbError: 'There is no class that exists with class code: ' + class_code})
             } else {
-                res.json(rows[0])
+                res.json(rows)
             }
         })
-        .catch(err => res.status(400).json({dbError: 'db error'}));
+        .catch(err => {
+            console.log(err);
+            res.status(400).json({dbError: err})
+        });
 
 };
 

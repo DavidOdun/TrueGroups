@@ -36,11 +36,11 @@ router.post('/api/v1/users/update/survey/:user_name', (req, res) => userHandler.
 // Class and Group Related
 router.put('/api/v1/classes/create', (req, res) => classHandler.createClass(req, res, db));
 router.post('/api/v1/classes/join', (req, res) => classHandler.joinClass(req, res, db));
-router.get('/api/v1/classes/enrolled/:userId', (req, res) => classHandler.getUserEnrolledClasses(req, res, db));
-router.get('/api/v1/classes/details/:classId/', (req, res) => classHandler.getClassDetails(req, res, db));
-router.get('/api/v1/classes/makeGroup/:classId', (req, res) => classHandler.createGroups(req, res, db));
-router.get('/api/v1/classes/allGroups/:classId', (req, res) => classHandler.getAllClassesGroups(req, res, db));
-router.get('/api/v1/classes/students/:classId/:studentId', (req, res) => classHandler.getStudentsClassGroup(req, res, db));
+router.get('/api/v1/classes/enrolled/:user_id', (req, res) => classHandler.getUserEnrolledClasses(req, res, db));
+router.get('/api/v1/classes/details/:class_code/', (req, res) => classHandler.getClassDetails(req, res, db));
+router.get('/api/v1/classes/makeGroup/:class_code', (req, res) => classHandler.createGroups(req, res, db));
+router.get('/api/v1/classes/allGroups/:class_code', (req, res) => classHandler.getAllClassesGroups(req, res, db));
+router.get('/api/v1/classes/students/:class_code/:user_id', (req, res) => classHandler.getStudentsClassGroup(req, res, db));
 router.post('/api/v1/classes/delete', (req, res) => classHandler.deleteClass(req, res, db));
 
 // Questions Related
