@@ -41,7 +41,7 @@ router.get('/api/v1/classes/details/:classId/', (req, res) => classHandler.getCl
 router.get('/api/v1/classes/makeGroup/:classId', (req, res) => classHandler.createGroups(req, res, db));
 router.get('/api/v1/classes/allGroups/:classId', (req, res) => classHandler.getAllClassesGroups(req, res, db));
 router.get('/api/v1/classes/students/:classId/:studentId', (req, res) => classHandler.getStudentsClassGroup(req, res, db));
-router.post('/api/v1/classes/delete', (req, res) => classHandler.deleteClass(req, res, db));
+router.post('/api/v1/classes/delete/:class_code', (req, res) => classHandler.deleteClass(req, res, db));
 
 // Questions Related
 router.post('/api/v1/questions/add', (req, res) => questionHandler.addQuestion(req, res, db));
