@@ -4,13 +4,16 @@ title: About TrueGroups
 ---
 
 ## Functionality
-*Add what it can do*
+The ultimate goal of the project is to provide professors with a means of generating project groups that optimize learning potential and compatibility while simultaneously avoiding demographic and experiential bias.
 
 ## Technical Architecture
-*Add all of this stuff too*
+- Frontend: React.js
+- Backend: Node.js
+- Databse: PostgreSQL
 
 ## The Team
-*Talk about each of us*
+The project originated at the University of Notre Dame's CSE40677: Open Source Software Development Course in Spring of 2020.
 
 ## Channels?
-*Embed Gitter and Trello and whatnot*
+[Trello](https://trello.com/b/ijCxFSVn/application-development)
+[Gitter](https://gitter.im/TrueGroups/community)
