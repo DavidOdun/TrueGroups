@@ -25,9 +25,12 @@ class HomePage extends Component {
                         <Button size="lg" color="secondary" onClick={() => this.handleButtonPress("./signin")}> Login </Button>
                     </div>
                 </nav>
-                <div className="row justify-content-center">
-                    <div className="col">
-                        One of two columns
+                <div className="row justify-content-center bg-light">
+                    <div className="col align-self-center">
+                        <h1 className="text-primary text-center">What is TrueGroups?</h1>
+                        <h4 className="text-secondary text-center">TrueGroup is an unbiased group creator</h4>
+                        <h6 className="text-success text-center">It improves group dynamics which leads to a smoother learning experience for the classroom</h6>
+
                     </div>
                     <div className="col">
                         <img src="/StudentsWorking.jpg" className="img-fluid" alt="Student working around computer">
