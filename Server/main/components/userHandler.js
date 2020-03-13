@@ -6,7 +6,7 @@ let SURVEYS_TABLE = 'student_responses';
 // Endpoint: /api/v1/users/create
 const createUser = (req, res, db) => {
     console.log(db.isReady);
-    const {title, first_name, last_name, preferred_first_name, user_name, email, password, user_type, institution} = req.body;
+    const {first_name, last_name, preferred_first_name, user_name, email, password, user_type, institution} = req.body;
     //First check to see if user already exists
     db.from(USERS_TABLE).select('*').where({email: email})
         .then((rows) => {
@@ -18,7 +18,7 @@ const createUser = (req, res, db) => {
                             let passwordHash = md5(password);
                             const created_at = new Date();
                             db(USERS_TABLE).insert({
-                                title, first_name, last_name, preferred_first_name: preferred_first_name, user_name,
+                                first_name, last_name, preferred_first_name: preferred_first_name, user_name,
                                 email, password: passwordHash, user_type, institution, created_at
                             })
                                 .returning('*')
