@@ -7,6 +7,8 @@ let SURVEYS_TABLE = 'student_responses';
 const createUser = (req, res, db) => {
     console.log(db.isReady);
     const {title, first_name, last_name, preferred_first_name, user_name, email, password, user_type, institution} = req.body;
+    console.log("In the Create User function ---- About to show req.body ")
+    console.log(req.body)
     //First check to see if user already exists
     db.from(USERS_TABLE).select('*').where({email: email})
         .then((rows) => {

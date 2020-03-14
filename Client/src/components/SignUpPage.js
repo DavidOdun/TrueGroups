@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
+import axios from 'axios';
 
 class SignUpPage extends Component {
     constructor(props)
@@ -24,9 +25,24 @@ class SignUpPage extends Component {
         */
     }
 
-    validateFormInput()
+    async validateFormInput()
     {
+        let response = await axios.put('/api/v1/users/create',
+            {
+               title: 'Mx',
+               first_name: this.state.firstname,
+               last_name: this.state.lastname,
+               preferred_first_name: this.state.prefferedname,
+               user_name: this.state.username,
+               email: this.state.email,
+               password: this.state.password,
+               user_type: 'student',
+               institution: this.state.institution
+            }
+        )
 
+        console.log("Response: ")
+        console.log(response) 
     }
     /* 
         ToDo:
