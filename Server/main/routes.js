@@ -27,7 +27,7 @@ router.get('/api/hello', function (req, res) {
 
 // API Endpoints
 // User Related
-router.put('/api/v1/users/create', (req, res) => userHandler.createUser(req, res, db), console.log(req), console.log(res));
+router.put('/api/v1/users/create', (req, res) => userHandler.createUser(req, res, db));
 router.post('/api/v1/users/authenticate', (req, res) => userHandler.authenticateUser(req, res, db));
 router.get('/api/v1/users/get/:user_name', (req, res) => userHandler.getUser(req, res, db));
 router.post('/api/v1/users/update/basic/:user_name', (req, res) => userHandler.updateBasicUserInfo(req, res, db));
