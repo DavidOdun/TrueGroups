@@ -5,7 +5,7 @@ let SURVEYS_TABLE = 'student_responses';
 
 // Endpoint: /api/v1/users/create
 const createUser = (req, res, db) => {
-    const {title, first_name, last_name, preferred_first_name, user_name, email, password, user_type, institution} = req.body;
+    const {first_name, last_name, preferred_first_name, user_name, email, password, user_type, institution} = req.body;
 //First check to see if user already exists
     db.from(USERS_TABLE).select('*').where({email: email})
         .then((rows) => {
@@ -35,6 +35,7 @@ const createUser = (req, res, db) => {
             }
         })
         .catch(err => {
+            console.log("Here: " + err);
             res.status(400).json({dbError: err})
         });
 };
@@ -43,7 +44,7 @@ const createUser = (req, res, db) => {
 const authenticateUser = (req, res, db) => {
     const {email, password} = req.body;
     //First check to see if user already exists
-    db.from(USERS_TABLE).select('*').where('email', '=', email)
+    db.from(USERS_TABLE).select('*').where({email: email})
         .then((rows) => {
             if (rows.length === 0) {
                 // If user does exist, do not create new user.
@@ -59,7 +60,10 @@ const authenticateUser = (req, res, db) => {
                 }
             }
         })
-        .catch(err => res.status(400).json({dbError: 'db error'}));
+        .catch(err => {
+            res.status(400).json({dbError: err});
+            console.log(err);
+        });
 };
 
 // Endpoint: /api/v1/users/get/:user_name
