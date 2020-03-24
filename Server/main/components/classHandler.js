@@ -19,7 +19,7 @@ const createClass = (req, res, db) => {
                     .then(item => {
                         res.json(item)
                     })
-                    .catch(err => res.status(400).json({dbError: 'Error inserting the user in the db'}))
+                    .catch(err => res.status(400).json({dbError: err}))
             } else {
                 // If user does exist, do not create new user.
                 res.json({dbError: 'Class already Exists'})
@@ -64,27 +64,39 @@ const joinClass = (req, res, db) => {
 };
 
 const getUserEnrolledClasses = (req, res, db) => {
-    const {user_id} = req.body;
+    const {user_id} = req.params;
 
     //First check to see if user already exists
     db.from(CLASS_MEMBERS_TABLE).select('*').where({member_id: user_id})
         .then((rows) => {
             if (rows.length > 0) {
-                var classes = [];
-                for (let row in rows) {
-                    classes.push(row['class_id']);
-                }
-                res.json(classes)
+                res.json(rows)
             } else {
                 res.json({error: "The user is not enrolled in any classes"})
             }
         })
         .catch(err => {
-            res.status(400).json({dbError: 'Error connecting to the db'})
+            console.log("err:" + user_id);
+            res.status(400).json({dbError: err})
         });
 };
 
 const getClassDetails = (req, res, db) => {
+    const {class_code} = req.params;
+        //First check to see if user already exists
+    db.from(CLASSES_TABLE).select('*').where({class_code: class_code})
+        .then((rows) => {
+            if (rows.length === 0) {
+                // If user does exist, do not create new user.
+                res.json({dbError: 'There is no class that exists with class code: ' + class_code})
+            } else {
+                res.json(rows)
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(400).json({dbError: err})
+        });
 
 };
 
@@ -93,17 +105,46 @@ const createGroups = (req, res, db) => {
 };
 
 const getAllClassesGroups = (req, res, db) => {
-
+    const {class_code} = req.body;
+        //First check to see if user already exists
+    db.from(GROUPS_TABLE).select('*')
+        .then((rows) => {
+            if (rows.length === 0) {
+                // If user does exist, do not create new user.
+              res.json({dbError: 'There are no groups '})
+            } else {
+                res.json(rows)
+            }
+        })
+        .catch(err => res.status(400).json({dbError: 'db error'}));
 };
 
 const getStudentsClassGroup = (req, res, db) => {
-
+    const {class_code} = req.body;
+        //First check to see if class already exists
+    db.from(CLASSES_TABLE).select('*').where({class_code: class_code, student_id})
+        .then((rows) => {
+            if (rows.length === 0) {
+                // If user does exist, do not create new user.
+                res.json({dbError: 'There is no class that exists with class code: ' + class_code})
+            } else {
+                res.json(rows[0])
+            }
+        })
+        .catch(err => res.status(400).json({dbError: 'db error'}));
+    
 };
 
 const deleteClass = (req, res, db) => {
-
+    // delete a class based on class code
+    db.run(`DELETE FROM classes WHERE class_code=?`, class_code, function(err) {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log(`Deleted class: ` + class_code);
+    });
 };
-// Fake Writing
+
 
 module.exports = {
     createClass,

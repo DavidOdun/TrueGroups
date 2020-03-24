@@ -4,7 +4,6 @@ import {
   Switch,
   Route
 } from "react-router-dom"
-import axios from 'axios';
 import './App.css';
 import HomePage from './components/HomePage';
 import SignUpPage from './components/SignUpPage';
@@ -13,17 +12,6 @@ import EditPage from './components/EditPage';
 
 /* Starting Home Page */
 class App extends Component {
-  state = {
-    hello: null
-  }
-
-  componentDidMount(){
-    axios.get('/hello')
-      .then(res => this.setState({hello: res.data}))
-      .catch(err => console.log(err))
-      console.log("We got the state")
-      console.log(this.state)
-  }
 
   render() {
     return (
