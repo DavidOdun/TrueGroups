@@ -5,7 +5,6 @@ let SURVEYS_TABLE = 'student_responses';
 
 // Endpoint: /api/v1/users/create
 const createUser = (req, res, db) => {
-    console.log(db.isReady);
     const {title, first_name, last_name, preferred_first_name, user_name, email, password, user_type, institution} = req.body;
     //First check to see if user already exists
     db.from(USERS_TABLE).select('*').where({email: email})
@@ -32,7 +31,7 @@ const createUser = (req, res, db) => {
                     })
             } else {
                 // If user does exist, do not create new user.
-                res.json({dbError: 'User already Exists'})
+                res.json({dbError: 'dbError'})
             }
         })
         .catch(err => {
@@ -85,7 +84,6 @@ const updateBasicUserInfo = (req, res, db) => {
 
     for (let key in req.body) {
         if (key !== 'email') {
-            console.log(key + ": " + req.body[key]);
             switch (key) {
                 case 'first_name':
                     db.from(USERS_TABLE).update({first_name: req.body[key]}).where({user_name: user_name})
@@ -96,7 +94,6 @@ const updateBasicUserInfo = (req, res, db) => {
                                 })
                         })
                         .catch((e) => {
-                            console.log("there was an issue: " + e);
                             res.status(500).json(e)
                         });
                     break;
@@ -109,7 +106,6 @@ const updateBasicUserInfo = (req, res, db) => {
                                 })
                         })
                         .catch((e) => {
-                            console.log("there was an issue: " + e);
                             res.status(500).json(e)
                         });
                     break;
@@ -122,7 +118,6 @@ const updateBasicUserInfo = (req, res, db) => {
                                 })
                         })
                         .catch((e) => {
-                            console.log("there was an issue: " + e);
                             res.status(500).json(e)
                         });
                     break;
@@ -135,7 +130,6 @@ const updateBasicUserInfo = (req, res, db) => {
                                 })
                         })
                         .catch((e) => {
-                            console.log("there was an issue: " + e);
                             res.status(500).json(e)
                         });
                     break;
@@ -148,7 +142,6 @@ const updateBasicUserInfo = (req, res, db) => {
                                 })
                         })
                         .catch((e) => {
-                            console.log("there was an issue: " + e);
                             res.status(500).json(e)
                         });
                     break;
@@ -185,12 +178,35 @@ const updateSurveyUserInfo = (req, res, db) => {
         .catch(err => res.status(400).json({dbError: err}));
 };
 
-// Fake Writing
+// Update the student response to the survey question. If there is no response,
+// one will be persisted.
+// Endpoint: /api/v1/users/update/survey/:user_name
+const deleteUser = (req, res, db) => {
+    const { user_name } = req.params;
+    //First check to see if user already exists
+    db.from(USERS_TABLE).select('*').where({user_name: user_name})
+        .then((rows) => {
+            if (rows.length !== 0) {
+                db.from(USERS_TABLE).where({user_name: user_name}).del()
+                    .then((rows) => {
+                        res.json({success: "users deleted: " + rows})
+                    })
+                    .catch( err => res.json({dbError: err}))
+
+            } else {
+                // If user does exist, do not create new user.
+                res.json({dbError: 'User does not exist'})
+            }
+        })
+        .catch(err => res.status(400).json({dbError: 'db error: ' + err}));
+};
+
 
 module.exports = {
     createUser,
     authenticateUser,
     getUser,
     updateBasicUserInfo,
-    updateSurveyUserInfo
+    updateSurveyUserInfo,
+    deleteUser
 };
