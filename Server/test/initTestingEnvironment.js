@@ -1,22 +1,11 @@
-var postgres = require('pg');
-var fs = require('fs');
-var sql = fs.readFileSync('../database_schema.sql').toString();
+const { exec } = require('child_process');
 
 function initDatabase() {
-    let pg = new postgres.Pool();
-
-    pg.connect('postgres://eddie:@localhost/truegroupstest', function(err, client, done){
-        if(err){
-            console.log('error: ', err);
-            process.exit(1);
-        }
-        client.query(sql, function(err, result){
-            done();
-            if(err){
-                console.log('error: ', err);
-                process.exit(1);
-            }
-        });
+    exec('psql -f ../create_test_database_schema.sql', (err) => {
+      if (err) {
+        // node couldn't execute the command
+        process.close(1);
+      }
     });
 }
 
@@ -28,10 +17,10 @@ function initDatabaseAndTables() {
             host : '127.0.0.1',
             user : '',
             password : '',
-            database : 'truegroups'
+            database : 'truegroups_test'
           }
     });
 }
 
-// initDatabase();
+initDatabase();
 initDatabaseAndTables();
