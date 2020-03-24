@@ -1,22 +1,28 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
+import axios from 'axios';
 
 class SignInPage extends Component {
     constructor(props)
     {
         super(props)
         this.state = {
-            username: " ",
-            password: " "
+            username: "",
+            password: ""
         }
     }
-  
-    componentDidMount(){
-       /* Make Axios Call to Express BackEnd 
-      axios.get('/hello')
-        .then(res => this.setState({hello: res.data}))
-        .catch(err => console.log(err))
-        */
+
+    async handleSubmit()
+    {
+        let response = await axios.post('/api/v1/users/authenticate',
+            {
+                email: this.state.email,
+                password: this.state.password
+            }
+        )
+
+        console.log(response)
+        alert(response)
     }
     /* 
         ToDo:
@@ -53,7 +59,7 @@ class SignInPage extends Component {
                             <Label for="examplePassword">Password</Label>
                             <Input type="password" name="password" id="examplePassword" onChange={(e) => this.setState({password: e.target.value})} placeholder="strong password" />
                         </FormGroup>
-                        <Button color="primary" size="lg" block>Login</Button>
+                        <Button color="primary" size="lg" onClick={() => this.handleSubmit()} block>Login</Button>
                     </Form>
                 </div>
             </div>
