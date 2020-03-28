@@ -24,7 +24,7 @@ test('creates duplicate user, should fail', async done => {
         .send(user);
     expect(response.status).toBe(200);
     expect(response.body.dbError.length).toBeGreaterThan(0);
-    expect(response.body.dbError).toBe('dbError');
+    expect(response.body.dbError).toContain('User name already taken');
     done();
 });
 
@@ -98,12 +98,12 @@ test('tests user authentication, should succeed', async done => {
 });
 
 
-/**
- * Test Updating Basic Information of a user
- */
-test('delete user, should succeed', async done => {
-    const deleteResponse = await request.delete('/api/v1/users/delete/'+user.user_name);
-    expect(deleteResponse.status).toBe(200);
-    expect(deleteResponse.body.success).toBe('users deleted: 1');
-    done()
-});
+// /**
+//  * Test Deleting a user
+//  */
+// test('delete user, should succeed', async done => {
+//     const deleteResponse = await request.delete('/api/v1/users/delete/'+user.user_name);
+//     expect(deleteResponse.status).toBe(200);
+//     expect(deleteResponse.body.success).toBe('users deleted: 1');
+//     done()
+// });
