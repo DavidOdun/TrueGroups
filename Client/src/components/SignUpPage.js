@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { UncontrolledAlert, Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
+import { Redirect } from 'react-router'
 import axios from 'axios';
 
 const initialState = {
@@ -19,7 +20,8 @@ const initialState = {
     institution: "",
     institution_error: "",
     userrole: "",
-    userrole_error: ""
+    userrole_error: "",
+    page_redirect: false
 }
 
 class SignUpPage extends Component {
@@ -143,7 +145,10 @@ class SignUpPage extends Component {
             }
             else /* Good API Response: Push to specific user profile page*/
             { 
+                alert("Welcome! New User Added: " + this.state.username)
                 // TODO: Push to Private Route
+                console.log("About to Redirect")
+                this.setState({page_redirect : true})
             }
             
        
@@ -163,6 +168,11 @@ class SignUpPage extends Component {
     render() {
         console.log("In the Render Function");
         console.log(this.state)
+        if (this.state.page_redirect)
+        {
+            console.log("Found Page Redirect True");
+            return <Redirect to='/signin' />
+        }
       return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
@@ -220,6 +230,7 @@ class SignUpPage extends Component {
                     <FormGroup>
                         <Label for="exampleRole">User Role</Label>
                         <Input type="select" name="select" id="exampleRole" onChange={(e) => this.setState({userrole: e.target.value})}>
+                            <option></option>
                             <option>Student</option>
                             <option>Professor</option>
                         </Input>
@@ -228,6 +239,7 @@ class SignUpPage extends Component {
                     <FormGroup>
                         <Label for="exampleSelect">Institution</Label>
                         <Input type="select" name="select" id="exampleSelect" onChange={(e) => this.setState({institution: e.target.value})}>
+                            <option></option>
                             <option>University of Notre Dame</option>
                             <option>Holy Cross College</option>
                             <option>Michigan State</option>
