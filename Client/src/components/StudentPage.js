@@ -4,7 +4,7 @@ import { Button, UncontrolledTooltip, Form, FormGroup, Label, Input, InputGroup,
 import axios from 'axios';
 import { Redirect } from 'react-router'
 
-class HomePage extends Component {
+class StudentPage extends Component {
     constructor(props)
     {
         super(props)        
@@ -164,5 +164,5 @@ class HomePage extends Component {
     }
   }
   
-  export default withRouter(HomePage);
+  export default withRouter(StudentPage);
   
