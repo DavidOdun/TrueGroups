@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
-import { Button, UncontrolledTooltip, Form, FormGroup, Label, Input } from 'reactstrap';
-import axios from 'axios';
+import { Button, UncontrolledTooltip, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon } from 'reactstrap';
+// import axios from 'axios';
+import { Redirect } from 'react-router'
 
 const tempQuestions = ["Q1---?", "Q2---?", "Q3---?", "Q4---?", "Q5---?", "Q6---?", "Q7---?", "Q8---?", "Q8---?", "Q9---?"]
 
@@ -13,26 +14,40 @@ class HomePage extends Component {
             apiResponse: "",
             surveyQuestions: tempQuestions,
             surveyResponses: {},
-            completedSurvey: false,
-            /* TODO: Save User Information from Props */
-            userInfo: "",
+            completedSurvey: true,
+            pageRedirect: "",
+            userInfo: props.location.state.user_data,
         }
     }
 
     componentDidMount()
     {
-        /* TODO: API Call to get user Survey Questions */
+        /* TODO: API Call to get user Survey Questions ---> axios.get('/api/v1/questions/all') */
 
-        /*
-        console.log("Making User Name Api Call")
-        axios.get('/api/v1/users/get/:user_name')
-            .then(res => this.setState({apiResponse: res.data}))
-        console.log("Finished Making User Name Api Call")
-        */
+        /* TODO: API Call to get all user Classes ---> axios.get('api/v1/classes/enrolled/:user_id') */
+
+        /* TODO: Set the survey questions state based on the Api Responses*/
     }
+
     handleButtonPress(value)
     {
-        this.props.history.push(value);
+        switch(value)
+        {
+            case "joinclass":
+                console.log("Joining Class");
+                /* TODO: API-Call to join class  -----> axios.post('api/v1/classes/join') */
+
+                /* TODO: Call function that pass class Information to made by the cards */
+                break;
+
+            case "submitsurvey":
+                console.log("Submitting Survey");
+                /* TODO: API-Call to submit survey  -----> axios.post('api/v1/users/update/survey/:username') */
+                break;
+
+            default:
+                break;
+        }
     }
 
     structureModalQuestions()
@@ -65,8 +80,21 @@ class HomePage extends Component {
     }
 
     render() {
-    console.log(this.state)
-      return (
+        if (this.state.pageRedirect)
+        {
+            return <Redirect to= {this.state.pageRedirect} />
+        }
+
+        /* Block Complete Survey Buttons */
+        var surveyButton = <button type="button" className="btn btn-info btn-lg btn-block" data-toggle="modal" data-target=".bd-example-modal-lg">Complete User Survey!</button>
+        
+        /* Join a Class Input and Button */
+        var joinClass = <InputGroup size="lg">         
+                            <Input placeholder="Enter Class Code e.g. 1010"/>
+                            <InputGroupAddon addonType="append"><Button onClick={() => this.handleButtonPress("joinclass")}>Join a Class</Button></InputGroupAddon>
+                        </InputGroup>
+        console.log(this.state)
+        return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
                     <a className="navbar-brand" href="/" id="UncontrolledTooltipExample">
@@ -76,25 +104,24 @@ class HomePage extends Component {
                             Click to return Home
                         </UncontrolledTooltip>
                     </a>
-                    <h1>Welcome, NAME</h1>
+
+                    {/* Get User Name passed as a prop and update the name below*/}
+                    {this.state.userInfo.preferred_first_name ? <h1>Welcome, {this.state.userInfo.preferred_first_name}</h1> : <h1>Welcome, {this.state.userInfo.first_name}</h1>}
+                    
                     <div>
-                        {/* TODO-Add Buttons: 1. Edit Profile Page, 2. Edit Survey 3. Logout*/}
-                        <Button size="lg" color="primary" onClick={() => this.handleButtonPress("/signup")}> Edit Profile</Button>{' '}
+                        {/* Buttons: 1. Edit Profile Page, 2. Edit Survey 3. Logout*/}
+                        <Button size="lg" color="primary" onClick={() => this.props.history.push("/editprofile")}> Edit Profile</Button>{' '}
                         <button type="button" className="btn btn-info btn-lg" data-toggle="modal" data-target=".bd-example-modal-lg">Edit Survey</button>{' '}
-                        <Button size="lg" color="secondary" onClick={() => this.handleButtonPress("/")}> Logout </Button>
+                        <Button size="lg" color="secondary" onClick={() => this.setState({pageRedirect: "/"})}> Logout </Button>
 
                     </div>
                 </nav>
-                {/* TODO: Block Button -- Complete User Survey Ternery Expression --> Link to Survey Page*/}
+
+                {/* Block Button -- Complete User Survey Ternery Expression --> Link to Survey Page */}
                 { this.state.completedSurvey ? 
-                    <div></div> : 
-                    <button type="button" className="btn btn-info btn-lg btn-block" data-toggle="modal" data-target=".bd-example-modal-lg">
-                        Complete User Survey!
-                    </button>
+                    joinClass : 
+                    surveyButton
                 }
-                
-
-
 
                 <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-lg">
@@ -109,21 +136,12 @@ class HomePage extends Component {
                                 {this.structureModalQuestions()}
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary">Save changes</button>
+                                <button type="button" className="btn btn-secondary btn-lg" data-dismiss="modal">Cancel</button>
+                                <Button size="lg" color="primary" onClick={() => this.handleButtonPress("submitsurvey")}> Submit Changes </Button>
                             </div>
                         </div>
                     </div>
-                </div>
-
-
-                {/* TODO: Input Box to Get Class Code*/}
-
-                {/* TODO:
-                    1. 
-                
-                */}
-                    
+                </div>                  
             </div>
       );
     }
