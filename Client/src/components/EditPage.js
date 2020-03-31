@@ -1,33 +1,74 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
 import { Redirect } from 'react-router'
+import {withRouter} from 'react-router-dom';
+import axios from 'axios';
 
 class EditPage extends Component {
     constructor(props)
     {
         super(props)
         this.state = {
-            email: " ",
-            username: " ",
-            password: " ",
-            preferredname: " ",
-            institution: " ",
-            pageRedirect: ""
+            email: "",
+            username: "",
+            password: "",
+            preferredname: "",
+            institution: "",
+            pageRedirect: "",
+            userInfo: props.location.state.userInfo
         }
     }
   
-    handleUpdate()
+    async handleUpdate()
     {
-        /* TODO: Pass the User Name as a props to the component */
+        let jForm = {}
+        var change = false;
+        if (this.state.email)
+        {
+            jForm["email"] = this.state.email;
+            change = true;
+        } 
+        if (this.state.username)
+        {
+            jForm["username"] = this.state.username;
+            change = true;
+        } 
+        if (this.state.password)
+        {
+            jForm["password"] = this.state.password;
+            change = true;
+        }        
+        if (this.state.preferredname)
+        {
+            jForm["preferredname"] = this.state.preferredname;
+            change = true;
+        }        
+        if (this.state.institution)
+        {
+            jForm["institution"] = this.state.institution;
+            change = true;
+        }
+        if (change)
+        {
+            /* Make API call: axios.post('/api/v1/users/update/basic/:username) */
+            const response = await axios.post('/api/v1/users/update/basic/'+this.state.userInfo.user_name, jForm);
 
-        /* TODO: Make API call: axios.post('/api/v1/users/update/basic/:username) */
-
-        /* TODO: if the response is true -> Send the page to login*/
-
-        this.setState({pageRedirect: "/signin"})
+            if (response.data.dbError)
+            {
+                alert(response.data.dbError)
+            }else if (response.data.error){
+                alert(response.data.error);
+            }else{
+                alert("Login Successful!")     
+                this.setState({pageRedirect: "/signin"})
+            }
+        }else{
+            alert("No Change found on the Page")
+        }
     }
 
     render() {
+        console.log(this.state)
         if (this.state.pageRedirect)
         {
             console.log("Found Page Redirect True");
@@ -46,7 +87,7 @@ class EditPage extends Component {
                     <h1>True Groups: Edit Profile</h1>
                     <div></div>
                 </nav>
-                <div class="container">
+                <div className="container">
                 <Form>
                     <FormGroup>
                         <Label for="exampleEmail">Email</Label>
@@ -82,5 +123,5 @@ class EditPage extends Component {
     }
   }
   
-  export default EditPage;
+  export default withRouter(EditPage);
   
