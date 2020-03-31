@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
 import { Button, UncontrolledTooltip, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon } from 'reactstrap';
-// import axios from 'axios';
+import axios from 'axios';
 import { Redirect } from 'react-router'
-
-const tempQuestions = ["Q1---?", "Q2---?", "Q3---?", "Q4---?", "Q5---?", "Q6---?", "Q7---?", "Q8---?", "Q8---?", "Q9---?"]
 
 class HomePage extends Component {
     constructor(props)
@@ -14,7 +12,7 @@ class HomePage extends Component {
         console.log(props)
         this.state = {
             apiResponse: "",
-            surveyQuestions: tempQuestions,
+            surveyQuestions: [],
             surveyResponses: {},
             completedSurvey: true,
             pageRedirect: "",
@@ -25,7 +23,13 @@ class HomePage extends Component {
     componentDidMount()
     {
         /* TODO: API Call to get user Survey Questions ---> axios.get('/api/v1/questions/all') */
-
+        axios.get('/api/v1/questions/all')
+            .then(qRes => {
+                if (qRes.data.length !== 0)
+                {
+                    this.setState({surveyQuestions: qRes.data})
+                }
+            });
         /* TODO: API Call to get all user Classes ---> axios.get('api/v1/classes/enrolled/:user_id') */
 
         /* TODO: Set the survey questions state based on the Api Responses*/
@@ -45,6 +49,17 @@ class HomePage extends Component {
             case "submitsurvey":
                 console.log("Submitting Survey");
                 /* TODO: API-Call to submit survey  -----> axios.post('api/v1/users/update/survey/:username') */
+                if (Object.keys(this.state.surveyResponses).length === this.state.surveyQuestions.length)
+                {
+                    console.log("All Questions answered")
+                    axios.post('/api/v1/users/update/basic/'+this.state.userInfo.user_name, JSON.stringify(this.state.surveyResponses))
+                        .then(qRes => {
+                            console.log("Response Below")
+                            console.log(qRes)
+                        });
+                }else{
+                    alert("Error: Not all questions have been answered")
+                }
                 break;
 
             default:
@@ -65,7 +80,7 @@ class HomePage extends Component {
             formGroupItems.push
             (
                 <FormGroup key={pos}> 
-                    <Label for={qName}>{qName + ": " + this.state.surveyQuestions[pos]}</Label>
+                    <Label for={qName}>{qName + ": " + this.state.surveyQuestions[pos].question_string}</Label>
                     <Input type="select" name="select" id={qName} onChange={(e) => this.setState({surveyResponses: { ...this.state.surveyResponses, [qName]:e.target.value }})}>
                         <option></option>
                         <option>1</option>
