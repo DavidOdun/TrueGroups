@@ -59,7 +59,7 @@ class EditPage extends Component {
             }else if (response.data.error){
                 alert(response.data.error);
             }else{
-                alert("Login Successful!")     
+                alert("Update Successful!")     
                 this.setState({pageRedirect: "/signin"})
             }
         }else{
