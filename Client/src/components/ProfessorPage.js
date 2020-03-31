@@ -8,7 +8,8 @@ class ProfessorPage extends Component {
     {
         super(props)        
         this.state = {
-            pageRedirect: ""
+            pageRedirect: "",
+            userInfo: props.location.state.user_data
         }
     }
 
