@@ -7,6 +7,7 @@ const user = {title: "Mr.", first_name: "Edward", last_name: "Cunningham", prefe
 
 const user_credentials = {email: "ecunnin2@nd.edu", password: "password"};
 
+
 /**
  * Test User Creation
  */
@@ -24,7 +25,7 @@ test('creates duplicate user, should fail', async done => {
         .send(user);
     expect(response.status).toBe(200);
     expect(response.body.dbError.length).toBeGreaterThan(0);
-    expect(response.body.dbError).toContain('User name already taken');
+    expect(response.body.dbError).toContain('Email is already taken');
     done();
 });
 
@@ -88,7 +89,7 @@ test('tests user authentication, should fail', async done => {
 /**
  * Test Updating Basic Information of a user
  */
-test('tests user authentication, should succeed', async done => {
+test('tests update basic user data, should succeed', async done => {
     const update_user = {preferred_first_name: "newPreferredName"};
     const response = await request.post('/api/v1/users/update/basic/'+user.user_name)
         .send(update_user);
@@ -98,12 +99,38 @@ test('tests user authentication, should succeed', async done => {
 });
 
 
-// /**
-//  * Test Deleting a user
-//  */
-// test('delete user, should succeed', async done => {
-//     const deleteResponse = await request.delete('/api/v1/users/delete/'+user.user_name);
-//     expect(deleteResponse.status).toBe(200);
-//     expect(deleteResponse.body.success).toBe('users deleted: 1');
-//     done()
-// });
+/**
+ * Test Updating Survey Information of a user
+ */
+test('tests update user survey data, should succeed', async done => {
+    const update_user = {
+        "Q1": "1", "Q2": "1", "Q3": "1", "Q4": "1", "Q5": "1",
+        "Q6": "1", "Q7": "8", "Q8": "9", "Q9": "10", "Q10": "1",
+    };
+    const response = await request.post('/api/v1/users/update/survey/'+user.user_name)
+        .send(update_user);
+    expect(response.status).toBe(200);
+    done()
+});
+
+/**
+ * Test Updating Survey Information of a user
+ */
+test('tests update user survey data, should succeed', async done => {
+    const update_user = {"Q1": "1", "Q2": "1"};
+    const response = await request.post('/api/v1/users/update/survey/'+user.user_name)
+        .send(update_user);
+    expect(response.status).toBe(200);
+    done()
+});
+
+
+/**
+ * Test Deleting a user
+ */
+test('delete user, should succeed', async done => {
+    const deleteResponse = await request.delete('/api/v1/users/delete/'+user.user_name);
+    expect(deleteResponse.status).toBe(200);
+    expect(deleteResponse.body.success).toBe('users deleted: 1');
+    done()
+});
