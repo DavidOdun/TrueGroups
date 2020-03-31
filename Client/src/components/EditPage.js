@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
+import { Redirect } from 'react-router'
 
 class EditPage extends Component {
     constructor(props)
@@ -9,28 +10,29 @@ class EditPage extends Component {
             email: " ",
             username: " ",
             password: " ",
-            prefferedname: " ",
-            institution: " "
+            preferredname: " ",
+            institution: " ",
+            pageRedirect: ""
         }
     }
   
-    componentDidMount(){
-       /* Make Axios Call to Express BackEnd 
-      axios.get('/hello')
-        .then(res => this.setState({hello: res.data}))
-        .catch(err => console.log(err))
-        */
+    handleUpdate()
+    {
+        /* TODO: Pass the User Name as a props to the component */
+
+        /* TODO: Make API call: axios.post('/api/v1/users/update/basic/:username) */
+
+        /* TODO: if the response is true -> Send the page to login*/
+
+        this.setState({pageRedirect: "/signin"})
     }
-    /* 
-        ToDo:
-        1. Save the user input as a part of this components state
-        2. Button Pressed
-            a. Display User Entry on Button Press
-            b. Make Update to Database
-        3. Redirect to Home Page
-    */
 
     render() {
+        if (this.state.pageRedirect)
+        {
+            console.log("Found Page Redirect True");
+            return <Redirect to ={this.state.pageRedirect} />
+        }
       return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
@@ -59,8 +61,8 @@ class EditPage extends Component {
                         <Input type="password" name="password" id="examplePassword" onChange={(e) => this.setState({password: e.target.value})} placeholder="strong password" />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="examplePrefferedName">Preffered Name</Label>
-                        <Input type="prefferedname" name="prefferedname" id="examplePrefferedname" onChange={(e) => this.setState({prefferedname: e.target.value})} placeholder="prefferred name" />
+                        <Label for="examplepreferredName">preferred Name</Label>
+                        <Input type="preferredname" name="preferredname" id="examplepreferredname" onChange={(e) => this.setState({preferredname: e.target.value})} placeholder="prefferred name" />
                     </FormGroup>       
                     <FormGroup>
                         <Label for="exampleSelect">Institution</Label>
@@ -72,7 +74,7 @@ class EditPage extends Component {
                             <option>Saint Mary's College</option>
                         </Input>
                     </FormGroup>
-                    <Button color="primary" size="lg" block>Update</Button>
+                    <Button color="primary" size="lg" onClick={() => this.handleUpdate()} block>Update</Button>
                 </Form>
                 </div>
             </div>
