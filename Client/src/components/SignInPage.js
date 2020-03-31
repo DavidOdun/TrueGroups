@@ -87,7 +87,12 @@ class SignInPage extends Component {
                 )
             }else if (this.state.user_data.user_type === "Professor")
             {
-                return <Redirect to= "/professorpage" />
+                return (
+                    <Redirect to= {{
+                        pathname: '/professorpage',
+                        state: { user_data: this.state.user_data }
+                    }}/>
+                )
             }
         }
       return (
