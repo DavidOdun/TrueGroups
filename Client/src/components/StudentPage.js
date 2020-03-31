@@ -9,7 +9,9 @@ const tempQuestions = ["Q1---?", "Q2---?", "Q3---?", "Q4---?", "Q5---?", "Q6---?
 class HomePage extends Component {
     constructor(props)
     {
-        super(props)
+        super(props)        
+        console.log("Props called in Student Page")
+        console.log(props)
         this.state = {
             apiResponse: "",
             surveyQuestions: tempQuestions,
@@ -82,7 +84,7 @@ class HomePage extends Component {
     render() {
         if (this.state.pageRedirect)
         {
-            return <Redirect to= {this.state.pageRedirect} />
+            return <Redirect to={{ pathname: this.state.pageRedirect, state: {userInfo : this.state.userInfo }}}/>
         }
 
         /* Block Complete Survey Buttons */
@@ -110,7 +112,7 @@ class HomePage extends Component {
                     
                     <div>
                         {/* Buttons: 1. Edit Profile Page, 2. Edit Survey 3. Logout*/}
-                        <Button size="lg" color="primary" onClick={() => this.props.history.push("/editprofile")}> Edit Profile</Button>{' '}
+                        <Button size="lg" color="primary" onClick={() => this.setState({pageRedirect: "/editprofile"})}> Edit Profile</Button>{' '}
                         <button type="button" className="btn btn-info btn-lg" data-toggle="modal" data-target=".bd-example-modal-lg">Edit Survey</button>{' '}
                         <Button size="lg" color="secondary" onClick={() => this.setState({pageRedirect: "/"})}> Logout </Button>
 
