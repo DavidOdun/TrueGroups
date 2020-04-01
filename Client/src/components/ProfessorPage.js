@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
-import { Button, Form, FormGroup, Input, Label, UncontrolledTooltip } from 'reactstrap';
+import { Button, Form, FormGroup, Input, Label, UncontrolledTooltip, CustomInput } from 'reactstrap';
 import { Redirect } from 'react-router'
 import axios from 'axios';
 
@@ -11,8 +11,10 @@ class ProfessorPage extends Component {
         this.state = {
             surveyQuestions: [],
             pageRedirect: "",
-            userAddedQuestions: "",
+            userAddedQuestions: "",     
+            userDeletedQuestions: [],
             userInfo: props.location.state.user_data
+
         }
     }
 
@@ -35,6 +37,30 @@ class ProfessorPage extends Component {
             });
     }
     
+    apiCallDeleteQuestions()
+    {
+        console.log("Called Deleted Questions")
+        if (this.state.userDeletedQuestions.length === 0)
+        {
+            alert("No Value Selected.")
+        }else{
+            console.log("THERE IS SOMETHING BEING CALLED")
+            for(var pos = 0; pos < this.state.userDeletedQuestions.length; pos++)
+            {
+                axios.post('/api/v1/questions/remove/'+this.state.userDeletedQuestions[pos])
+                .then(addResponse => {
+                    console.log("Response Below")
+                    console.log(addResponse)
+                })
+                .catch(error => {
+                    console.log(error.response)
+                });
+            }   
+            alert("Delete: Submit Succesfully Completed!")
+        }
+        this.apiCallGetQuestions()    
+    }
+
     apiCallAddQuestions()
     {
         let filteredQuestion = this.state.userAddedQuestions.split("\n").filter(item => item);
@@ -42,6 +68,8 @@ class ProfessorPage extends Component {
 
         for (var pos = 0; pos < filteredQuestion.length; pos++)
         {
+            if (filteredQuestion[pos] === "")
+                continue
             let tempForm = {
                 "question_string": filteredQuestion[pos]
             } 
@@ -55,28 +83,49 @@ class ProfessorPage extends Component {
                 });
         }
 
-        alert("Submit Succesfully Completed!")
+        alert("Add: Submit Succesfully Completed!")
         this.apiCallGetQuestions()    
     }
 
-    structureModalQuestions()
+    structureModalQuestions(formType)
     {
         const userInputItems = []
         const formGroupItems = []
+        const selectMultItems = []
         
         for (var pos = 0; pos < this.state.surveyQuestions.length; pos++)
         {
-            var temp = pos+1;
-            let qName = "Q"+temp;
+            if (formType === "/label")
+            {
+                formGroupItems.push
+                (
+                    <Label key={pos} for={this.state.surveyQuestions[pos].question_id.toString()}>{this.state.surveyQuestions[pos].question_id + ": " + this.state.surveyQuestions[pos].question_string}</Label>
+                )
+            }else if(formType === "/selectmultiple")
+            {
+                selectMultItems.push(
+                    <option key={pos} value={this.state.surveyQuestions[pos].question_id}>{this.state.surveyQuestions[pos].question_string}</option>
+                )
+                
+            }
 
-            formGroupItems.push
-            (
-                <FormGroup key={pos}> 
-                    <Label for={qName}>{qName + ": " + this.state.surveyQuestions[pos].question_string}</Label>
-                </FormGroup>
+        }
+        if (formType === "/label")
+        {
+            userInputItems.push(<Form key={0}><FormGroup>{formGroupItems}</FormGroup></Form>);
+        }else if(formType === "/selectmultiple")
+        {
+            userInputItems.push(
+                <Form key={0}>
+                    <FormGroup>
+                        <Label for="removeSelect">Use CTRL or CMD to Select Multiple</Label>
+                        <CustomInput type="select" id="removeSelect" name="customSelect" onChange={(e) => this.setState({userDeletedQuestions:[...e.target.selectedOptions].map(o => o.value)})} multiple>
+                            {selectMultItems}
+                        </CustomInput>
+                    </FormGroup>
+                </Form>
             )
         }
-        userInputItems.push(<Form key={0}>{formGroupItems}</Form>);
         return userInputItems;
     }
 
@@ -99,8 +148,7 @@ class ProfessorPage extends Component {
                     </a>
 
                     {/* Get User Name passed as a prop and update the name below*/}
-                    <h1>Welcome, Mary</h1>
-                    
+                    {this.state.userInfo.preferred_first_name ? <h1>Welcome, {this.state.userInfo.preferred_first_name}</h1> : <h1>Welcome, {this.state.userInfo.first_name}</h1>}                    
                     <div>
                         {/* Buttons: 1. Edit Profile Page, 2. Edit Survey 3. Logout*/}
                         <Button size="lg" color="primary" onClick={() => this.setState({pageRedirect: "/editprofile"})}> Edit Profile</Button>{' '}
@@ -124,7 +172,7 @@ class ProfessorPage extends Component {
                             <div className="card card-body">
                                 { this.state.surveyQuestions.length === 0 ? 
                                     <h3>No Current Questions. Use the Add button below to begin </h3> : 
-                                    <h3>{this.structureModalQuestions()}</h3>
+                                    <h3>{this.structureModalQuestions("/label")}</h3>
                                 }                                
                             </div>
                             <div className="card-footer">
@@ -152,7 +200,7 @@ class ProfessorPage extends Component {
                     <div className="modal-dialog modal-lg">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLongTitle">User Survey Questions</h5>
+                                <h5 className="modal-title" id="exampleModalLongTitle">ADD: Survey Questions</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -173,23 +221,21 @@ class ProfessorPage extends Component {
                     <div className="modal-dialog modal-lg">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLongTitle">User Survey Questions</h5>
+                                <h5 className="modal-title" id="exampleModalLongTitle">REMOVE: Survey Questions</h5>
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div className="modal-body">
-                                RemoveQ: We gon call a function here to get user input
+                                <h3>{this.structureModalQuestions("/selectmultiple")}</h3>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary btn-lg" data-dismiss="modal">Cancel</button>
-                                <Button size="lg" color="primary" onClick={() => this.handleButtonPress("submitsurvey")}> Submit Changes </Button>
+                                <button type="button" className="btn btn-primary btn-lg" onClick={() => this.apiCallDeleteQuestions()} data-dismiss="modal">Submit Changes</button>
                             </div>
                         </div>
                     </div>
                 </div>                                   
-
-
             </div>
       );
     }
