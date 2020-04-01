@@ -54,11 +54,12 @@ class StudentPage extends Component {
                     console.log("All Questions answered")
                     let jForm = JSON.stringify(this.state.surveyResponses)
                     console.log(jForm)
-                    axios.post('/api/v1/users/update/basic/'+this.state.userInfo.user_name, jForm)
+                    axios.post('/api/v1/users/update/survey/'+this.state.userInfo.user_name, this.state.surveyResponses)
                         .then(qRes => {
                             console.log("Response Below")
                             console.log(qRes)
                         });
+                        alert("Survey Submitted Succesfully")
                 }else{
                     alert("Error: Not all questions have been answered")
                 }
@@ -76,7 +77,7 @@ class StudentPage extends Component {
         
         for (var pos = 0; pos < this.state.surveyQuestions.length; pos++)
         {
-            let qName=this.state.surveyQuestions[pos].question_id.toString();
+            let qName="Q"+ this.state.surveyQuestions[pos].question_id.toString();
             formGroupItems.push
             (
                 <FormGroup key={pos}> 
@@ -155,7 +156,7 @@ class StudentPage extends Component {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary btn-lg" data-dismiss="modal">Cancel</button>
-                                <Button size="lg" color="primary" onClick={() => this.handleButtonPress("submitsurvey")}> Submit Changes </Button>
+                                <button type="button" className="btn btn-primary btn-lg" onClick={() => this.handleButtonPress("submitsurvey")} data-dismiss="modal">Submit Changes</button>
                             </div>
                         </div>
                     </div>
