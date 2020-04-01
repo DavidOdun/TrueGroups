@@ -52,7 +52,9 @@ class StudentPage extends Component {
                 if (Object.keys(this.state.surveyResponses).length === this.state.surveyQuestions.length)
                 {
                     console.log("All Questions answered")
-                    axios.post('/api/v1/users/update/basic/'+this.state.userInfo.user_name, JSON.stringify(this.state.surveyResponses))
+                    let jForm = JSON.stringify(this.state.surveyResponses)
+                    console.log(jForm)
+                    axios.post('/api/v1/users/update/basic/'+this.state.userInfo.user_name, jForm)
                         .then(qRes => {
                             console.log("Response Below")
                             console.log(qRes)
@@ -74,13 +76,12 @@ class StudentPage extends Component {
         
         for (var pos = 0; pos < this.state.surveyQuestions.length; pos++)
         {
-            var temp = pos+1;
-            let qName = "Q"+temp;
-
+            let qName=this.state.surveyQuestions[pos].question_id.toString();
             formGroupItems.push
             (
                 <FormGroup key={pos}> 
-                    <Label for={qName}>{qName + ": " + this.state.surveyQuestions[pos].question_string}</Label>
+                    {/* <Label for={qName}>{qName + ": " + this.state.surveyQuestions[pos].question_string}</Label> */}
+                    <Label key={pos} for={qName}>{this.state.surveyQuestions[pos].question_id + ": " + this.state.surveyQuestions[pos].question_string}</Label>
                     <Input type="select" name="select" id={qName} onChange={(e) => this.setState({surveyResponses: { ...this.state.surveyResponses, [qName]:e.target.value }})}>
                         <option></option>
                         <option>1</option>
