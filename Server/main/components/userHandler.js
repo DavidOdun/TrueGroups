@@ -176,7 +176,8 @@ const updateSurveyUserInfo = (req, res, db) => {
                                 })
                         })
                         .catch((e) => {
-                            res.status(500).json(e)
+                            res.status(500).json("Error: " + e);
+                            break;
                         });
                 }
                 res.json("Success: " + count + " Rows Updated");
