@@ -31,11 +31,10 @@ const createUser = (req, res, db) => {
                     })
             } else {
                 // If user does exist, do not create new user.
-                res.json({dbError: 'dbError'})
+                res.json({dbError: 'Email is already taken'})
             }
         })
         .catch(err => {
-            console.log("Here: " + err);
             res.status(400).json({dbError: err})
         });
 };
@@ -62,7 +61,6 @@ const authenticateUser = (req, res, db) => {
         })
         .catch(err => {
             res.status(400).json({dbError: err});
-            console.log(err);
         });
 };
 
@@ -161,32 +159,36 @@ const updateBasicUserInfo = (req, res, db) => {
 // Endpoint: /api/v1/users/update/survey/:user_name
 const updateSurveyUserInfo = (req, res, db) => {
     const {user_name} = req.params;
-
-    const {question_id, response} = req.body;
-
     db.from(USERS_TABLE).select('*').where({user_name: user_name})
         .then((rows) => {
             if (rows.length === 0) {
                 // If user does exist, do not create new user.
                 res.json({dbError: 'There is no user that exists with user_name: ' + user_name})
             } else {
+                var count = 0;
                 let id = rows[0]['id'];
-                db(SURVEYS_TABLE).insert({id: id, question_id: question_id, response: response})
-                    .returning('*')
-                    .then(item => {
-                        res.json(item);
-                    })
-                    .catch(err => res.status(400).json({dbError: err}))
+                for (let question_id in req.body) {
+                    db.from(SURVEYS_TABLE).update({response: req.body[question_id]}).where({id: id, question_id: question_id})
+                        .then((u) => {
+                            db.from(USERS_TABLE).select('*').where({user_name: user_name})
+                                .then((rows) => {
+                                    count += 1;
+                                })
+                        })
+                        .catch((e) => {
+                            res.status(500).json(e)
+                        });
+                }
+                res.json("Success: " + count + " Rows Updated");
             }
-        })
-        .catch(err => res.status(400).json({dbError: err}));
+        });
 };
 
 // Update the student response to the survey question. If there is no response,
 // one will be persisted.
 // Endpoint: /api/v1/users/update/survey/:user_name
 const deleteUser = (req, res, db) => {
-    const { user_name } = req.params;
+    const {user_name} = req.params;
     //First check to see if user already exists
     db.from(USERS_TABLE).select('*').where({user_name: user_name})
         .then((rows) => {
@@ -195,7 +197,7 @@ const deleteUser = (req, res, db) => {
                     .then((rows) => {
                         res.json({success: "users deleted: " + rows})
                     })
-                    .catch( err => res.json({dbError: err}))
+                    .catch(err => res.json({dbError: err}))
 
             } else {
                 // If user does exist, do not create new user.
