@@ -105,7 +105,7 @@ test('tests update basic user data, should succeed', async done => {
 test('tests update user survey data, should succeed', async done => {
     const update_user = {
         "Q1": "1", "Q2": "1", "Q3": "1", "Q4": "1", "Q5": "1",
-        "Q6": "1", "Q7": "8", "Q8": "9", "Q9": "10", "Q10": "1",
+        "Q6": "1", "Q7": "8", "Q8": "9", "": "", "Q9": "10", "Q10": "1",
     };
     const response = await request.post('/api/v1/users/update/survey/'+user.user_name)
         .send(update_user);

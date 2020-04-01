@@ -168,6 +168,7 @@ const updateSurveyUserInfo = (req, res, db) => {
                 var count = 0;
                 let id = rows[0]['id'];
                 for (let question_id in req.body) {
+                    console.log(req.body[question_id]);
                     db.from(SURVEYS_TABLE).update({response: req.body[question_id]}).where({id: id, question_id: question_id})
                         .then((u) => {
                             db.from(USERS_TABLE).select('*').where({user_name: user_name})
@@ -176,8 +177,7 @@ const updateSurveyUserInfo = (req, res, db) => {
                                 })
                         })
                         .catch((e) => {
-                            res.status(500).json("Error: " + e);
-                            return;
+
                         });
                 }
                 res.json("Success: " + count + " Rows Updated");
