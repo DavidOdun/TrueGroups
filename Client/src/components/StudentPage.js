@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
-import { Button, UncontrolledTooltip, Form, FormGroup, Label, Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { Button, UncontrolledTooltip, Form, FormGroup, Label, Input } from 'reactstrap';
 import axios from 'axios';
 import { Redirect } from 'react-router'
 
@@ -15,7 +15,10 @@ class StudentPage extends Component {
             surveyQuestions: [],
             surveyResponses: {},
             completedSurvey: true,
+            newClassDetail: {},
             pageRedirect: "",
+            professorId: 0,
+            className: "",
             userInfo: props.location.state.user_data,
         }
     }
@@ -33,6 +36,36 @@ class StudentPage extends Component {
         /* TODO: API Call to get all user Classes ---> axios.get('api/v1/classes/enrolled/:user_id') */
 
         /* TODO: Set the survey questions state based on the Api Responses*/
+    }
+
+    apiJoinClass()
+    {
+        console.log("About to join the classes")
+        if ((this.state.professorId > 0) && this.state.className)
+        {
+            let jForm = {
+                "professor_id": this.state.professorId,
+                "class_name": this.state.className,
+                "user_name": this.state.userInfo.id
+            }
+
+            axios.post('/api/v1/classes/join',jForm)
+                .then(addResponse => {
+                    console.log("Response Below")
+                    console.log(addResponse)
+                    if (addResponse.data.success)
+                    {
+                        alert("Classes Succesfully Joined!")
+                        this.setState({newClassDetail: addResponse.data.class_details})
+                    }
+                })
+                .catch(error => {
+                    console.log(error.response)
+                    alert(error.response.data.dbError)
+                });            
+        }else{
+            alert("Error: Not all Join Class Fields complete");
+        }
     }
 
     handleButtonPress(value)
@@ -60,6 +93,10 @@ class StudentPage extends Component {
                             console.log(qRes)
                         });
                         alert("Survey Submitted Succesfully")
+                        if (!this.state.completedSurvey)
+                        {
+                            this.setState({completedSurvey: true})
+                        }
                 }else{
                     alert("Error: Not all questions have been answered")
                 }
@@ -106,12 +143,15 @@ class StudentPage extends Component {
 
         /* Block Complete Survey Buttons */
         var surveyButton = <button type="button" className="btn btn-info btn-lg btn-block" data-toggle="modal" data-target=".bd-example-modal-lg">Complete User Survey!</button>
-        
+        var joinClass = <button type="button" className="btn btn-info btn-lg btn-block" data-toggle="collapse" data-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">Join a Class</button>
+
         /* Join a Class Input and Button */
+        /*
         var joinClass = <InputGroup size="lg">         
                             <Input placeholder="Enter Class Code e.g. 1010"/>
                             <InputGroupAddon addonType="append"><Button onClick={() => this.handleButtonPress("joinclass")}>Join a Class</Button></InputGroupAddon>
                         </InputGroup>
+        */
         console.log(this.state)
         return (
             <div>
@@ -141,6 +181,25 @@ class StudentPage extends Component {
                     joinClass : 
                     surveyButton
                 }
+                <div className="row">
+                    <div className="col">
+                        <div className="collapse multi-collapse" id="multiCollapseExample1">
+                            <div className="card card-body">
+                                <Form>                                    
+                                    <FormGroup>
+                                        <Label for="cSize">Professor ID</Label>
+                                        <Input type="number" name="cSize" id="cSize" onChange={(e) => this.setState({professorId: e.target.value})} placeholder="25" />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="cName">Class Name</Label>
+                                        <Input type="text" name="clName" id="cName" onChange={(e) => this.setState({className: e.target.value})} placeholder="Operating System 90210" />
+                                    </FormGroup>
+                                    <Button color="info" size="lg" onClick={() => this.apiJoinClass()} block>Submit Join Class Request</Button>
+                                </Form>                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-lg">
