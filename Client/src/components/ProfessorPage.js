@@ -9,6 +9,8 @@ class ProfessorPage extends Component {
     {
         super(props)        
         this.state = {
+            className:"",
+            classSize:"",
             surveyQuestions: [],
             pageRedirect: "",
             userAddedQuestions: "",     
@@ -85,6 +87,33 @@ class ProfessorPage extends Component {
 
         alert("Add: Submit Succesfully Completed!")
         this.apiCallGetQuestions()    
+    }
+
+    apiCreateClass()
+    {
+        console.log("About to create the classes")
+        if ((this.state.classSize > 0) && this.state.className)
+        {
+            let jForm = {
+                "professor_id": this.state.userInfo.id,
+                "class_name": this.state.className,
+                "max_member": this.state.classSize
+            }
+
+            axios.put('/api/v1/classes/create',jForm)
+                .then(addResponse => {
+                    console.log("Response Below")
+                    console.log(addResponse)
+                })
+                .catch(error => {
+                    console.log(error.response)
+                });
+            
+            alert("Classes Succesfully Created!")
+            window.location.reload()
+        }else{
+            alert("Error entering class creation information");
+        }
     }
 
     structureModalQuestions(formType)
@@ -187,10 +216,21 @@ class ProfessorPage extends Component {
                             </div>
                         </div>
                     </div>
+
                     <div className="col">
                         <div className="collapse multi-collapse" id="multiCollapseExample2">
                             <div className="card card-body">
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                                <Form>
+                                    <FormGroup>
+                                        <Label for="cName">Class Name</Label>
+                                        <Input type="text" name="clName" id="cName" onChange={(e) => this.setState({className: e.target.value})} placeholder="Operating System 90210" />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label for="cSize">Maximumn Class Size</Label>
+                                        <Input type="number" name="cSize" id="cSize" onChange={(e) => this.setState({classSize: e.target.value})} placeholder="25" />
+                                    </FormGroup>
+                                    <Button color="info" size="lg" onClick={() => this.apiCreateClass()} block>Create Class</Button>
+                                </Form>                            
                             </div>
                         </div>
                     </div>
