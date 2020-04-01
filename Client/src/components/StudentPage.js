@@ -68,42 +68,27 @@ class StudentPage extends Component {
         }
     }
 
-    handleButtonPress(value)
+    apiSubmitSurvey()
     {
-        switch(value)
+        console.log("Submitting Survey");
+        /* TODO: API-Call to submit survey  -----> axios.post('api/v1/users/update/survey/:username') */
+        if (Object.keys(this.state.surveyResponses).length === this.state.surveyQuestions.length)
         {
-            case "joinclass":
-                console.log("Joining Class");
-                /* TODO: API-Call to join class  -----> axios.post('api/v1/classes/join') */
-
-                /* TODO: Call function that pass class Information to made by the cards */
-                break;
-
-            case "submitsurvey":
-                console.log("Submitting Survey");
-                /* TODO: API-Call to submit survey  -----> axios.post('api/v1/users/update/survey/:username') */
-                if (Object.keys(this.state.surveyResponses).length === this.state.surveyQuestions.length)
+            console.log("All Questions answered")
+            let jForm = JSON.stringify(this.state.surveyResponses)
+            console.log(jForm)
+            axios.post('/api/v1/users/update/survey/'+this.state.userInfo.user_name, this.state.surveyResponses)
+                .then(qRes => {
+                    console.log("Response Below")
+                    console.log(qRes)
+                });
+                alert("Survey Submitted Succesfully")
+                if (!this.state.completedSurvey)
                 {
-                    console.log("All Questions answered")
-                    let jForm = JSON.stringify(this.state.surveyResponses)
-                    console.log(jForm)
-                    axios.post('/api/v1/users/update/survey/'+this.state.userInfo.user_name, this.state.surveyResponses)
-                        .then(qRes => {
-                            console.log("Response Below")
-                            console.log(qRes)
-                        });
-                        alert("Survey Submitted Succesfully")
-                        if (!this.state.completedSurvey)
-                        {
-                            this.setState({completedSurvey: true})
-                        }
-                }else{
-                    alert("Error: Not all questions have been answered")
+                    this.setState({completedSurvey: true})
                 }
-                break;
-
-            default:
-                break;
+        }else{
+            alert("Error: Not all questions have been answered")
         }
     }
 
@@ -144,14 +129,6 @@ class StudentPage extends Component {
         /* Block Complete Survey Buttons */
         var surveyButton = <button type="button" className="btn btn-info btn-lg btn-block" data-toggle="modal" data-target=".bd-example-modal-lg">Complete User Survey!</button>
         var joinClass = <button type="button" className="btn btn-info btn-lg btn-block" data-toggle="collapse" data-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">Join a Class</button>
-
-        /* Join a Class Input and Button */
-        /*
-        var joinClass = <InputGroup size="lg">         
-                            <Input placeholder="Enter Class Code e.g. 1010"/>
-                            <InputGroupAddon addonType="append"><Button onClick={() => this.handleButtonPress("joinclass")}>Join a Class</Button></InputGroupAddon>
-                        </InputGroup>
-        */
         console.log(this.state)
         return (
             <div>
@@ -215,7 +192,7 @@ class StudentPage extends Component {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary btn-lg" data-dismiss="modal">Cancel</button>
-                                <button type="button" className="btn btn-primary btn-lg" onClick={() => this.handleButtonPress("submitsurvey")} data-dismiss="modal">Submit Changes</button>
+                                <button type="button" className="btn btn-primary btn-lg" onClick={() => this.apiSubmitSurvey()} data-dismiss="modal">Submit Changes</button>
                             </div>
                         </div>
                     </div>
