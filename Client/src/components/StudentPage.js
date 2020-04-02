@@ -15,17 +15,34 @@ class StudentPage extends Component {
             surveyQuestions: [],
             surveyResponses: {},
             completedSurvey: true,
+            userEnrolledClass:[],
             newClassDetail: {},
             pageRedirect: "",
             professorId: 0,
             className: "",
+            classDisplayList: [],
             userInfo: props.location.state.user_data,
         }
     }
 
     componentDidMount()
     {
-        /* TODO: API Call to get user Survey Questions ---> axios.get('/api/v1/questions/all') */
+        axios.get('/api/v1/classes/details/1')
+        .then(addResponse => {
+            console.log("Class Details Response Below")
+            console.log(addResponse)
+        })
+        .catch(error => {
+            console.log(error.response)
+        });
+        this.apiGetUserQuestion()
+        this.apiEnrolledClasses()
+        this.structureClassDetails()
+    }
+
+    apiGetUserQuestion()
+    {
+        /* API Call to get user Survey Questions ---> axios.get('/api/v1/questions/all') */
         axios.get('/api/v1/questions/all')
             .then(qRes => {
                 if (qRes.data.length !== 0)
@@ -33,9 +50,6 @@ class StudentPage extends Component {
                     this.setState({surveyQuestions: qRes.data})
                 }
             });
-        /* TODO: API Call to get all user Classes ---> axios.get('api/v1/classes/enrolled/:user_id') */
-
-        /* TODO: Set the survey questions state based on the Api Responses*/
     }
 
     apiJoinClass()
@@ -56,6 +70,7 @@ class StudentPage extends Component {
                     if (addResponse.data.success)
                     {
                         alert("Classes Succesfully Joined!")
+                        this.apiEnrolledClasses()
                         this.setState({newClassDetail: addResponse.data.class_details})
                     }
                 })
@@ -90,6 +105,78 @@ class StudentPage extends Component {
         }else{
             alert("Error: Not all questions have been answered")
         }
+    }
+
+    apiEnrolledClasses()
+    {
+        /* TODO: API Call to get all user Classes ---> axios.get('api/v1/classes/enrolled/:user_id') */
+        //axios.get('api/v1/classes/enrolled/'+this.state.userInfo.id)
+        axios.get('api/v1/classes/enrolled/2')
+            .then(addResponse => {
+                console.log("Response Below")
+                console.log(addResponse)
+                if(!addResponse.data.error){
+                    this.setState({userEnrolledClass: addResponse.data})
+                }
+            })
+            .catch(error => {
+                console.log(error.response)
+                alert(error.response.data.dbError)
+            });  
+    }
+
+    apiGetClassDetails()
+    {
+        if (this.state.userEnrolledClass.length === 0)
+        {
+            alert("This User is not enrolled in any classes");
+        }else{
+            for(var pos = 0; pos < this.state.userEnrolledClass.length; pos++)
+            {
+                axios.get('/api/v1/classes/details/'+this.state.userEnrolledClass[pos].class_code)
+                    .then(addResponse => {
+                        console.log("Class Details Response Below")
+                        console.log(addResponse)
+                    })
+                    .catch(error => {
+                        console.log(error.response)
+                    });
+            }   
+            alert("Delete: Submit Succesfully Completed!")
+        }
+    }
+            /*
+            let groupResponse = await axios.get('/api/v1/classes/students/'+this.state.userEnrolledClass[pos].class_code+'/'+this.state.userInfo.id)
+            console.log("Group Response Below")
+            console.log(groupResponse)
+            */
+
+    async structureClassDetails()
+    {
+        const allUserClass = [] 
+        for(var pos = 0; pos < this.state.userEnrolledClass.length; pos++)
+        {   
+            /* Get the class details '/api/v1/classes/details/:class_code/' */
+            let addResponse = await axios.get('api/v1/classes/details/'+this.state.userEnrolledClass[pos].class_code)
+            console.log("Add Response Below:")
+            console.log(addResponse)
+            allUserClass.push(
+                <div key={pos} className="card text-center">
+                    <div className="card-header">
+                        Class Name: {addResponse.data[0].class_name}
+                    </div>
+                    <div className="card-body">
+                        <h5 className="card-title">Special title treatment</h5>
+                        <p className="card-text">There are no Current Groups</p>
+                    </div>
+                    <div className="card-footer text-muted">
+                        Professor ID: {addResponse.data[0].professor_id}
+                    </div>
+                </div>
+            )
+            console.log("In function User Class Length: " + allUserClass.length)
+        }
+        this.setState({classDisplayList: allUserClass})
     }
 
     structureModalQuestions()
@@ -175,6 +262,12 @@ class StudentPage extends Component {
                                 </Form>                            
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col">
+                        {this.state.classDisplayList}
                     </div>
                 </div>
 
