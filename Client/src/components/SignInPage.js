@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
 import axios from 'axios';
+import { Redirect } from 'react-router'
 
 class SignInPage extends Component {
     constructor(props)
@@ -11,6 +12,7 @@ class SignInPage extends Component {
             password: "",
             email_error: "",
             password_error: "",
+            user_data: {},
             private_redirect: false
         }
     }
@@ -20,6 +22,7 @@ class SignInPage extends Component {
         let e_error = "";
         let p_error = "";
         let p_redirect = false;
+        let response_data = {}
 
         if (this.state.email && this.state.password)
         {
@@ -40,6 +43,7 @@ class SignInPage extends Component {
             }else{
                 alert("Login Successful!")
                 p_redirect = true
+                response_data = response.data;
             }
         }else{
             if (!this.state.email || !this.state.email.includes("@") || !this.state.email.includes(".") || this.state.email.length < 5) 
@@ -54,7 +58,7 @@ class SignInPage extends Component {
             }
         }
         
-        this.setState({email_error: e_error, password_error: p_error, private_redirect: p_redirect})
+        this.setState({email_error: e_error, password_error: p_error, private_redirect: p_redirect, user_data: response_data})
     }
     /* 
         ToDo:
@@ -70,8 +74,26 @@ class SignInPage extends Component {
         console.log(this.state)
         if (this.state.private_redirect)
         {
-            console.log("Redirecting.....")
-            /* TODO --- REDIRECT TO PRIVATE USER HOME PAGE: STUDENT OR PROFESSOR */
+            /* TODO: Make a private route */
+            /* REDIRECT TO PRIVATE USER HOME PAGE: STUDENT OR PROFESSOR */
+
+            if (this.state.user_data.user_type === "Student")
+            {
+                return (
+                    <Redirect to= {{
+                        pathname: '/studentpage',
+                        state: { user_data: this.state.user_data }
+                    }}/>
+                )
+            }else if (this.state.user_data.user_type === "Professor")
+            {
+                return (
+                    <Redirect to= {{
+                        pathname: '/professorpage',
+                        state: { user_data: this.state.user_data }
+                    }}/>
+                )
+            }
         }
       return (
             <div>

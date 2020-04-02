@@ -1,36 +1,79 @@
 import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, UncontrolledTooltip } from 'reactstrap';
+import { Redirect } from 'react-router'
+import {withRouter} from 'react-router-dom';
+import axios from 'axios';
 
 class EditPage extends Component {
     constructor(props)
     {
         super(props)
         this.state = {
-            email: " ",
-            username: " ",
-            password: " ",
-            prefferedname: " ",
-            institution: " "
+            email: "",
+            username: "",
+            password: "",
+            preferredname: "",
+            institution: "",
+            pageRedirect: "",
+            userInfo: props.location.state.userInfo
         }
     }
   
-    componentDidMount(){
-       /* Make Axios Call to Express BackEnd 
-      axios.get('/hello')
-        .then(res => this.setState({hello: res.data}))
-        .catch(err => console.log(err))
-        */
+    async handleUpdate()
+    {
+        let jForm = {}
+        var change = false;
+        if (this.state.email)
+        {
+            jForm["email"] = this.state.email;
+            change = true;
+        } 
+        if (this.state.username)
+        {
+            jForm["username"] = this.state.username;
+            change = true;
+        } 
+        if (this.state.password)
+        {
+            jForm["password"] = this.state.password;
+            change = true;
+        }        
+        if (this.state.preferredname)
+        {
+            jForm["preferredname"] = this.state.preferredname;
+            change = true;
+        }        
+        if (this.state.institution)
+        {
+            jForm["institution"] = this.state.institution;
+            change = true;
+        }
+        if (change)
+        {
+            /* Make API call: axios.post('/api/v1/users/update/basic/:username) */
+            const response = await axios.post('/api/v1/users/update/basic/'+this.state.userInfo.user_name, jForm);
+
+            if (response.data.dbError)
+            {
+                alert(response.data.dbError)
+            }else if (response.data.error){
+                alert(response.data.error);
+            }else{
+                alert("Update Successful!")     
+                this.setState({pageRedirect: "/signin"})
+            }
+        }else{
+            alert("No Change found on the Page")
+        }
     }
-    /* 
-        ToDo:
-        1. Save the user input as a part of this components state
-        2. Button Pressed
-            a. Display User Entry on Button Press
-            b. Make Update to Database
-        3. Redirect to Home Page
-    */
 
     render() {
+        console.log(this.state)
+        if (this.state.pageRedirect)
+        {
+            console.log("Found Page Redirect True");
+            return <Redirect to ={this.state.pageRedirect} />
+        }
       return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
@@ -44,7 +87,7 @@ class EditPage extends Component {
                     <h1>True Groups: Edit Profile</h1>
                     <div></div>
                 </nav>
-                <div class="container">
+                <div className="container">
                 <Form>
                     <FormGroup>
                         <Label for="exampleEmail">Email</Label>
@@ -59,8 +102,8 @@ class EditPage extends Component {
                         <Input type="password" name="password" id="examplePassword" onChange={(e) => this.setState({password: e.target.value})} placeholder="strong password" />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="examplePrefferedName">Preffered Name</Label>
-                        <Input type="prefferedname" name="prefferedname" id="examplePrefferedname" onChange={(e) => this.setState({prefferedname: e.target.value})} placeholder="prefferred name" />
+                        <Label for="examplepreferredName">preferred Name</Label>
+                        <Input type="preferredname" name="preferredname" id="examplepreferredname" onChange={(e) => this.setState({preferredname: e.target.value})} placeholder="prefferred name" />
                     </FormGroup>       
                     <FormGroup>
                         <Label for="exampleSelect">Institution</Label>
@@ -72,7 +115,7 @@ class EditPage extends Component {
                             <option>Saint Mary's College</option>
                         </Input>
                     </FormGroup>
-                    <Button color="primary" size="lg" block>Update</Button>
+                    <Button color="primary" size="lg" onClick={() => this.handleUpdate()} block>Update</Button>
                 </Form>
                 </div>
             </div>
@@ -80,5 +123,5 @@ class EditPage extends Component {
     }
   }
   
-  export default EditPage;
+  export default withRouter(EditPage);
   
