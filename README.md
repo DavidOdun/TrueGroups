@@ -13,14 +13,15 @@ pool. The organizer and the members will then receive their group assignment.
 
 ## Getting Started
 #### Database Setup
-In the root directory, the file initDatabase.js destroys whatever any databases 
-named truegroups and creates a new one. To execute the script, run: `node initDatabase.js`
+In the root directory, the file initDatabase.js creates a database
+named TrueGroups. If there was already a preexisting database with
+this name, it gets overridden. To execute the script, run: `node initDatabase.js`
 
 #### Start Backend Server
 to start the backend server, run `npm install` and `npm start` in the `Server/` directory.
 
 #### Starting Front End Client
-to start the backend server, run `npm install` and `npm start` in the `Client/` directory.
+to start the frontend cliend, run `npm install` and `npm start` in the `Client/` directory.
 
 #### Testing
 To test the backend, run `npm run test` in the `Server/` directory.
