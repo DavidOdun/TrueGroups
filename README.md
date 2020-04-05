@@ -5,8 +5,8 @@
 TrueGroups is a platform that allows professors and other group organizers to group members 
 in such a way that maximizes productivity and engagement. Members of the larger organization
 or class answer several questions that allow us to understand who they are and what
-type of group the belong in. After students members join a class or organization,
-the group organizer then requests for True Groups to create groups using the 
+type of group they would be most productive in. After students members join a class or organization,
+the group organizer then requests for TrueGroups to create groups using the 
 pool. The organizer and the members will then receive their group assignment.
 
 ---
