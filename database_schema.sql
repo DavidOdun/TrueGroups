@@ -39,6 +39,7 @@ CREATE TABLE class_members (
 
 CREATE TABLE groups (
   group_code int PRIMARY KEY,
+  class_code int,
   group_name varchar(255),
   class_name varchar(255),
   project_name varchar(255),
@@ -47,12 +48,13 @@ CREATE TABLE groups (
 
 CREATE TABLE group_members (
   group_code int PRIMARY KEY,
+  class_code int,
   member_id int
 );
 
 ALTER TABLE student_responses ADD FOREIGN KEY (question_id) REFERENCES questions (question_id);
 
-ALTER TABLE group_members ADD FOREIGN KEY (member_id) REFERENCES student_responses (id);
+ALTER TABLE group_members ADD FOREIGN KEY (member_id) REFERENCES users (id);
 
 ALTER TABLE student_responses ADD FOREIGN KEY (id) REFERENCES users (id);
 
@@ -62,6 +64,8 @@ ALTER TABLE class_members ADD FOREIGN KEY (member_id) REFERENCES users (id);
 
 ALTER TABLE class_members ADD FOREIGN KEY (class_code) REFERENCES classes (class_code);
 
-ALTER TABLE groups ADD FOREIGN KEY (group_code) REFERENCES classes (class_code);
+ALTER TABLE groups ADD FOREIGN KEY (class_code) REFERENCES classes (class_code);
 
 ALTER TABLE group_members ADD FOREIGN KEY (group_code) REFERENCES groups (group_code);
+
+ALTER TABLE group_members ADD FOREIGN KEY (class_code) REFERENCES groups (class_code);
