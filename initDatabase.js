@@ -1,7 +1,7 @@
 const { exec } = require('child_process');
 
 function initDatabase() {
-    exec('psql -f ./create_prod_database_schema.sql', (err) => {
+    exec('sudo -u postgres psql -f ./create_test_database_schema.sql', (err) => {
       if (err) {
         // node couldn't execute the command
         console.log(err);
