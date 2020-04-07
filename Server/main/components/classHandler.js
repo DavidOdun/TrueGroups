@@ -254,8 +254,8 @@ const getStudentsClassGroup = (req, res, db) => {
     db.from(GROUP_MEMBERS_TABLE).select('*').where({member_id: user_id, class_code: class_code})
         .then((group) => {
             if (group.length === 0) {
-                // If user does exist, do not create new user.
-                res.json({dbError: 'The user is not in any groups in this class: ' + class_code})
+                // The user is not in any groups.
+                res.json([])
             } else {
                 // The group that is returned will have a group code. This group code can be used to get the other
                 // other students belonging to that group.
