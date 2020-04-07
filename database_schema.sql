@@ -33,12 +33,12 @@ CREATE TABLE classes (
 );
 
 CREATE TABLE class_members (
-  class_code int PRIMARY KEY,
+  class_code int,
   member_id int
 );
 
 CREATE TABLE groups (
-  group_code int PRIMARY KEY,
+  group_code SERIAL PRIMARY KEY,
   class_code int,
   group_name varchar(255),
   class_name varchar(255),
@@ -47,7 +47,7 @@ CREATE TABLE groups (
 );
 
 CREATE TABLE group_members (
-  group_code int PRIMARY KEY,
+  group_code int,
   class_code int,
   member_id int
 );
