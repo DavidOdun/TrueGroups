@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {withRouter} from 'react-router-dom';
-import { Button, Form, FormGroup, Input, Label, UncontrolledTooltip, CustomInput } from 'reactstrap';
+import { Button, Form, FormGroup, Input, Label, UncontrolledTooltip, CustomInput, Row } from 'reactstrap';
 import { Redirect } from 'react-router'
 import axios from 'axios';
 
@@ -116,6 +116,32 @@ class ProfessorPage extends Component {
         }
     }
 
+    apiMakeGroup()
+    {
+        /* TODO: 
+            1. Get Individual class value passed in 
+            2. While Wait for the response and pass the response back to what is needed
+        */
+        let classCode = 1;
+        axios.post('/api/v1/classes/makeGroups/'+classCode)
+        .then(makeGroupData => {
+                this.setState({ makeGroupData : makeGroupData.data })
+        });
+    }
+
+    apiGetClassGroup()
+    {
+        /* TODO: 
+            1. Get Individual class value passed in 
+            2. While Wait for the response and pass the response back to what is needed
+        */
+       let classCode = 1;
+       axios.get('/api/v1/classes/allGroups/'+classCode)
+       .then(classGroupData => {
+               this.setState({ classGroupData: classGroupData.data })
+       });
+    }
+
     structureModalQuestions(formType)
     {
         const userInputItems = []
@@ -128,7 +154,7 @@ class ProfessorPage extends Component {
             {
                 formGroupItems.push
                 (
-                    <Label key={pos} for={this.state.surveyQuestions[pos].question_id.toString()}>{this.state.surveyQuestions[pos].question_id + ": " + this.state.surveyQuestions[pos].question_string}</Label>
+                    <Row key={pos}><Label for={this.state.surveyQuestions[pos].question_id.toString()}>{this.state.surveyQuestions[pos].question_string}</Label></Row>
                 )
             }else if(formType === "/selectmultiple")
             {

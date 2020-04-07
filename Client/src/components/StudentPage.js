@@ -237,7 +237,10 @@ class StudentPage extends Component {
 
                 <div className="row">
                     <div className="col">
-                        {this.state.classDisplayList}
+                        {this.state.classDisplayList.length === 0 ?
+                            this.state.classDisplayList :
+                            <div> No Current Class. Join a Class Above</div>
+                        }
                     </div>
                 </div>
 
