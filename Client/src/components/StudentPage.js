@@ -8,8 +8,6 @@ class StudentPage extends Component {
     constructor(props)
     {
         super(props)        
-        console.log("Props called in Student Page")
-        console.log(props)
         this.state = {
             apiResponse: "",
             surveyQuestions: [],
@@ -27,17 +25,8 @@ class StudentPage extends Component {
 
     componentDidMount()
     {
-        axios.get('/api/v1/classes/details/1')
-        .then(addResponse => {
-            console.log("Class Details Response Below")
-            console.log(addResponse)
-        })
-        .catch(error => {
-            console.log(error.response)
-        });
         this.apiGetUserQuestion()
-        this.apiEnrolledClasses()
-        this.structureClassDetails()
+        this.apiGetClassInfo()
     }
 
     apiGetUserQuestion()
@@ -54,7 +43,7 @@ class StudentPage extends Component {
 
     apiJoinClass()
     {
-        console.log("About to join the classes")
+        // console.log("About to join the classes")
         if ((this.state.professorId > 0) && this.state.className)
         {
             let jForm = {
@@ -65,17 +54,17 @@ class StudentPage extends Component {
 
             axios.post('/api/v1/classes/join',jForm)
                 .then(addResponse => {
-                    console.log("Response Below")
-                    console.log(addResponse)
+                    // console.log("Response Below")
+                    // console.log(addResponse)
                     if (addResponse.data.success)
                     {
                         alert("Classes Succesfully Joined!")
-                        this.apiEnrolledClasses()
                         this.setState({newClassDetail: addResponse.data.class_details})
+                        this.apiGetClassInfo()
                     }
                 })
                 .catch(error => {
-                    console.log(error.response)
+                    // console.log(error.response)
                     alert(error.response.data.dbError)
                 });            
         }else{
@@ -86,7 +75,7 @@ class StudentPage extends Component {
     apiSubmitSurvey()
     {
         console.log("Submitting Survey");
-        /* TODO: API-Call to submit survey  -----> axios.post('api/v1/users/update/survey/:username') */
+        /* API-Call to submit survey  -----> axios.post('api/v1/users/update/survey/:username') */
         if (Object.keys(this.state.surveyResponses).length === this.state.surveyQuestions.length)
         {
             console.log("All Questions answered")
@@ -107,76 +96,57 @@ class StudentPage extends Component {
         }
     }
 
-    apiEnrolledClasses()
+    async apiGetClassInfo()
     {
-        /* TODO: API Call to get all user Classes ---> axios.get('api/v1/classes/enrolled/:user_id') */
+        let classPageUI = []
+        // Getting the List of all the classes that the student is in
         //axios.get('api/v1/classes/enrolled/'+this.state.userInfo.id)
-        axios.get('api/v1/classes/enrolled/2')
-            .then(addResponse => {
-                console.log("Response Below")
-                console.log(addResponse)
-                if(!addResponse.data.error){
-                    this.setState({userEnrolledClass: addResponse.data})
-                }
-            })
-            .catch(error => {
-                console.log(error.response)
-                alert(error.response.data.dbError)
-            });  
-    }
+        try{
+            let enrolledClassList = await axios.get('api/v1/classes/enrolled/'+this.state.userInfo.id)
+            console.log("Enrolled Class List")
+            console.log(enrolledClassList)
 
-    apiGetClassDetails()
-    {
-        if (this.state.userEnrolledClass.length === 0)
-        {
-            alert("This User is not enrolled in any classes");
-        }else{
-            for(var pos = 0; pos < this.state.userEnrolledClass.length; pos++)
+            for (var pos = 0; pos < enrolledClassList.data.length; pos++)
             {
-                axios.get('/api/v1/classes/details/'+this.state.userEnrolledClass[pos].class_code)
-                    .then(addResponse => {
-                        console.log("Class Details Response Below")
-                        console.log(addResponse)
-                    })
-                    .catch(error => {
-                        console.log(error.response)
-                    });
-            }   
-            alert("Delete: Submit Succesfully Completed!")
-        }
-    }
-            /*
-            let groupResponse = await axios.get('/api/v1/classes/students/'+this.state.userEnrolledClass[pos].class_code+'/'+this.state.userInfo.id)
-            console.log("Group Response Below")
-            console.log(groupResponse)
-            */
+                console.log(enrolledClassList.data[pos].class_code)
+                try{   
+                    var classCode = enrolledClassList.data[pos].class_code.toString();
+                    let currentClassDetails = await axios.get('api/v1/classes/details/'+classCode)
+                    console.log("currentClassDetails")
+                    console.log(currentClassDetails)
 
-    async structureClassDetails()
-    {
-        const allUserClass = [] 
-        for(var pos = 0; pos < this.state.userEnrolledClass.length; pos++)
-        {   
-            /* Get the class details '/api/v1/classes/details/:class_code/' */
-            let addResponse = await axios.get('api/v1/classes/details/'+this.state.userEnrolledClass[pos].class_code)
-            console.log("Add Response Below:")
-            console.log(addResponse)
-            allUserClass.push(
-                <div key={pos} className="card text-center">
-                    <div className="card-header">
-                        Class Name: {addResponse.data[0].class_name}
-                    </div>
-                    <div className="card-body">
-                        <h5 className="card-title">Special title treatment</h5>
-                        <p className="card-text">There are no Current Groups</p>
-                    </div>
-                    <div className="card-footer text-muted">
-                        Professor ID: {addResponse.data[0].professor_id}
-                    </div>
-                </div>
-            )
-            console.log("In function User Class Length: " + allUserClass.length)
+                    try{
+                        let currentGroupDetails = await axios.get('api/v1/classes/students/'+classCode+'/'+this.state.userInfo.id)
+                        console.log("currentGroupDetails")
+                        console.log(currentGroupDetails)
+                    } catch(err){
+                        console.log(err)
+                    }
+                    /* TODO: Move this above to the last try and check to see if there is any list given back */
+                    classPageUI.push(
+                        <div key={pos} className="card text-center">
+                            <div className="card-header">
+                                Class Name: {currentClassDetails.data[0].class_name}
+                            </div>
+                            <div className="card-body">
+                                <h5 className="card-title">Special title treatment</h5>
+                                <p className="card-text">There are no Current Groups</p>
+                            </div>
+                            <div className="card-footer text-muted">
+                                Professor ID: {currentClassDetails.data[0].professor_id}
+                            </div>
+                        </div>
+                    )
+                    
+                }catch(err){
+                    console.log(err)
+                }
+            }
+        }catch(err){
+            console.log(err)
         }
-        this.setState({classDisplayList: allUserClass})
+
+        this.setState({classDisplayList: classPageUI})
     }
 
     structureModalQuestions()
