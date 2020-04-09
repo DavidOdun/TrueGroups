@@ -35,7 +35,7 @@ const createUser = (req, res, db) => {
             }
         })
         .catch(err => {
-            res.status(400).json({dbError: err})
+            res.status(400).json({dbError: err, message: err.toString()})
         });
 };
 
