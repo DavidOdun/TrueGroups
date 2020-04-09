@@ -28,6 +28,7 @@ router.get('/api/v1/classes/enrolled/:user_id', (req, res) => classHandler.getUs
 router.get('/api/v1/classes/details/:class_code', (req, res) => classHandler.getClassDetails(req, res, db));
 router.post('/api/v1/classes/makeGroups/:class_code', (req, res) => classHandler.createGroups(req, res, db));
 router.get('/api/v1/classes/allGroups/:class_code', (req, res) => classHandler.getAllClassesGroups(req, res, db));
+router.get('/api/v1/classes/allClasses/:professor_id', (req, res) => classHandler.getProfessorsClasses(req, res, db));
 router.get('/api/v1/classes/students/:class_code/:user_id', (req, res) => classHandler.getStudentsClassGroup(req, res, db));
 router.delete('/api/v1/classes/delete', (req, res) => classHandler.deleteClass(req, res, db));
 router.delete('/api/v1/classes/members/delete', (req, res) => classHandler.deleteClassMembers(req, res, db));
