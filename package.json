@@ -5,9 +5,9 @@
   "name": "true-groups",
   "version": "0.0.1",
   "description": "A web app for creating the truest of groups.",
-  "main": "server.js",
+  "main": "Client/server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node Client/server.js"
   },
   "dependencies": {
     "express": "^4.17.1"
