@@ -115,7 +115,30 @@ const getUserEnrolledClasses = (req, res, db) => {
             }
         })
         .catch(err => {
-            res.status(400).json({dbError: err})
+            res.status(400).json({dbError: err.toString()})
+        });
+};
+
+/**
+ * Get all of the classes that a professor has set up.
+ * @param req
+ * @param res
+ * @param db
+ */
+const getProfessorsClasses = (req, res, db) => {
+    const {professor_id} = req.params;
+
+    //First check to see if user already exists
+    db.from(CLASSES_TABLE).select('*').where({professor_id: professor_id})
+        .then((rows) => {
+            if (rows.length > 0) {
+                res.json(rows)
+            } else {
+                res.json([])
+            }
+        })
+        .catch(err => {
+            res.status(400).json({dbError: err.toString()})
         });
 };
 
@@ -371,6 +394,7 @@ module.exports = {
     getClassDetails,
     createGroups,
     getAllClassesGroups,
+    getProfessorsClasses,
     getStudentsClassGroup,
     deleteClass,
     deleteClassMembers
