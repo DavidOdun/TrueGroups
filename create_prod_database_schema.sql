@@ -1,4 +1,4 @@
-CREATE USER truegroups_user;
+CREATE USER truegroups_user WITH PASSWORD 'test';
 ALTER USER truegroups_user WITH SUPERUSER;
 
 CREATE DATABASE truegroups_temp;
