@@ -1,3 +1,6 @@
+CREATE USER truegroups_user;
+ALTER USER truegroups_user WITH SUPERUSER;
+
 CREATE DATABASE truegroups_temp;
 
 \c truegroups_temp;
@@ -9,6 +12,8 @@ CREATE DATABASE truegroups;
 \c truegroups;
 
 DROP DATABASE truegroups_temp;
+
+GRANT CONNECT ON DATABASE truegroups_test TO truegroups_user;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,

@@ -104,7 +104,7 @@ function initDatabaseConnection() {
           version: '12.1',
           connection: {
             host : '127.0.0.1',
-            user : '',
+            user : 'truegroups_user',
             password : '',
             database : 'truegroups'
           }

@@ -165,6 +165,19 @@ test('join class test, should succeed', async done => {
 
 
 /**
+ * Get all of the classes that a professor is in charge of
+ */
+test('get professors classes test, should succeed', async done => {
+    const response = await request.get('/api/v1/classes/allClasses/' + professor_id);
+    expect(response.status).toBe(200);
+    expect(response.body.lengh == 1);
+    expect(response.body[0].class_name).toBe("Data Structures");
+    expect(response.body[0].class_code).toBe(class_code);
+    done();
+});
+
+
+/**
  * Get the the classes that student_one is enrolled in.
  */
 test('get all of the classes that a user is enrolled in test, should succeed', async done => {
