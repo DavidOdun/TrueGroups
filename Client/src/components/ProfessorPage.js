@@ -11,6 +11,7 @@ class ProfessorPage extends Component {
         this.state = {
             className:"",
             classSize:"",
+            classList: [],
             surveyQuestions: [],
             pageRedirect: "",
             userAddedQuestions: "",     
@@ -24,6 +25,7 @@ class ProfessorPage extends Component {
     {
         /* API Call to get user Survey Questions ---> axios.get('/api/v1/questions/all') */
         this.apiCallGetQuestions();
+        this.apiCallGetClasses();
 
     }
 
@@ -36,6 +38,19 @@ class ProfessorPage extends Component {
                 {
                     this.setState({surveyQuestions: qRes.data, userAddedQuestions: ""})
                 }
+            });
+    }
+
+    apiCallGetClasses()
+    {
+        axios.get('/api/v1/classes/allClasses/'+this.state.userInfo.id)
+            .then(response => {
+                console.log("Response Below")
+                console.log(response)
+                this.setState({classList: response.data})
+            })
+            .catch(error => {
+                console.log(error.response)
             });
     }
     
@@ -110,7 +125,7 @@ class ProfessorPage extends Component {
                 });
             
             alert("Classes Succesfully Created!")
-            window.location.reload()
+            this.apiCallGetClasses()
         }else{
             alert("Error entering class creation information");
         }
@@ -140,6 +155,70 @@ class ProfessorPage extends Component {
        .then(classGroupData => {
                this.setState({ classGroupData: classGroupData.data })
        });
+    }
+
+    structureClasses()
+    {
+        let classHolder = []
+        let tempClassList = this.state.classList;
+        if (this.state.classList.length === 0)
+        {
+            classHolder.push(
+                <div key={0}> No Current Classes. Use the Button Above to Create One </div>
+            )
+        }else{
+            for (var pos = 0; pos < tempClassList.length; pos++)
+            {
+                axios.get('/api/v1/classes/allGroups/'+tempClassList[0].class_code)
+                    .then(response => {
+                        console.log("Response Below: All Groups")
+                        console.log(response)
+                    })
+                    .catch(error => {
+                        console.log(error.response)
+                    });
+                    classHolder.push(
+                        <div key={pos} className="card text-center">
+                            <div className="card-header">
+                                <div className="row">
+                                    <h6>Class Name: {tempClassList[pos].class_name}</h6>
+                                </div>
+                                <div className="row">
+                                    Class Code: {tempClassList[pos].class_code}
+                                </div>
+                            </div>
+                            <div className="card-body">
+                                <div className="row">
+                                    <div className="col">
+                                        <p className="card-text">There are no Current Groups</p>
+                                        <h5 className="card-title">Special title treatment</h5>
+                                    </div>
+                                    <div className="col">
+                                        <Form>
+                                            <FormGroup>
+                                                <Label for="pName">Project Name</Label>
+                                                <Input type="text" name="prName" id="pName" onChange={(e) => this.setState({projectName: e.target.value})} placeholder="Group Project" />
+                                            </FormGroup>
+                                            <Button color="info" size="lg" onClick={() => this.apiCreateClass()} block>Create Class</Button>
+                                        </Form>   
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="card-footer text-muted">
+                                <div className="row">
+                                    Professor ID: {tempClassList[pos].professor_id}
+                                </div>
+                                <div className="row">
+                                    Creation Date: {tempClassList[pos].created_at}
+                                </div>
+                            </div>
+                        </div>
+                    )
+            }
+
+        }
+
+        return classHolder;
     }
 
     structureModalQuestions(formType)
@@ -261,6 +340,8 @@ class ProfessorPage extends Component {
                         </div>
                     </div>
                 </div>
+
+                {this.structureClasses()}
 
                 <div className="modal fade addQ" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-lg">
