@@ -17,7 +17,8 @@ class ProfessorPage extends Component {
             pageRedirect: "",
             userAddedQuestions: "",     
             userDeletedQuestions: [],
-            userInfo: props.location.state.user_data
+            userInfo: props.location.state.user_data,
+            classRoomDisplay: []
 
         }
     }
@@ -27,7 +28,6 @@ class ProfessorPage extends Component {
         /* API Call to get user Survey Questions ---> axios.get('/api/v1/questions/all') */
         this.apiCallGetQuestions();
         this.apiCallGetClasses();
-
     }
 
     /* Create a fuction to get the axios call for questions */
@@ -42,17 +42,86 @@ class ProfessorPage extends Component {
             });
     }
 
-    apiCallGetClasses()
+    async apiCallGetClasses()
     {
-        axios.get('/api/v1/classes/allClasses/'+this.state.userInfo.id)
-            .then(response => {
-                console.log("Response Below")
-                console.log(response)
-                this.setState({classList: response.data})
-            })
-            .catch(error => {
-                console.log(error.response)
-            });
+        let classHolder = []
+        try{
+            let classResponse = await axios.get('/api/v1/classes/allClasses/'+this.state.userInfo.id)
+            console.log("Response Below: classResponse ")
+            console.log(classResponse)
+            let tempClassList = classResponse.data;
+            if(tempClassList.length !== 0)
+            {
+                for (var pos = 0; pos < tempClassList.length; pos++)
+                {
+                        let tempInputName = "prName"+pos;
+                        let currentClassGroup = await axios.get('/api/v1/classes/allGroups/'+tempClassList[pos].class_code)
+                        console.log("Response Below: currentClassGroup "+ pos)
+                        console.log(currentClassGroup);
+
+                        let structuredTable = [];
+                        if(currentClassGroup.data.dbError)
+                        {
+                            structuredTable.push(<h5 key={pos}>There are no Current Groups </h5>)
+                        }else{
+                            if (currentClassGroup.data.length !==0)
+                            {
+                                structuredTable = this.structureGroupTable(currentClassGroup.data);
+                            }
+                        }
+                        classHolder.push(
+                            <div key={pos} className="card text-center">
+                                <div className="card-header">
+                                    <div className="row">
+                                        <h6>Class Name: {tempClassList[pos].class_name}</h6>
+                                    </div>
+                                    <div className="row">
+                                        Class Code: {tempClassList[pos].class_code}
+                                    </div>
+                                </div>
+                                <div className="card-body">
+                                    <div className="row">
+                                        <div className="col">
+                                            <div className="card-text">
+                                                { structuredTable.length === 0 ? 
+                                                    <h5>There are no Current Groups </h5> : 
+                                                    structuredTable
+                                                }  
+                                            </div>
+                                        </div>
+                                        <div className="col">
+                                            <Form>
+                                                <FormGroup>
+                                                    <Label for="pName">Project Name</Label>
+                                                    {/* <Input type="text" name="prName" id="pName" onChange={(e) => this.setState({projectName: e.target.value})} placeholder="Group Project" /> */}
+                                                    <Input type="text" name={tempInputName} id={tempInputName} onChange={(e) => this.setState({[e.target.name]: e.target.value})} placeholder="Group Project" />
+                                                </FormGroup>
+                                                <Button name={tempInputName} data-clname={tempClassList[pos].class_name} data-clcode={tempClassList[pos].class_code} color="info" size="lg" onClick={(e) => this.apiCreateGroup(e.target.name, e.target.dataset.clname, e.target.dataset.clcode)} block>Create Group</Button>
+                                            </Form>   
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="card-footer text-muted">
+                                    <div className="row">
+                                        Professor ID: {tempClassList[pos].professor_id}
+                                    </div>
+                                    <div className="row">
+                                        Creation Date: {tempClassList[pos].created_at}
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                }
+                console.log(classHolder);
+                this.setState({classRoomDisplay: classHolder, classList: classResponse.data})
+            }else{
+                classHolder.push(
+                    <div key={0}> No Current Classes. Use the Button Above to Create One </div>
+                )
+            }
+        }catch(err){
+            console.log(err)
+        }
     }
     
     apiCallDeleteQuestions()
@@ -120,13 +189,13 @@ class ProfessorPage extends Component {
                 .then(addResponse => {
                     console.log("Response Below")
                     console.log(addResponse)
+                    this.apiCallGetClasses()
+                    alert("Classes Succesfully Created!")
+                    window.location.reload()
                 })
                 .catch(error => {
                     console.log(error.response)
                 });
-            
-            alert("Classes Succesfully Created!")
-            this.apiCallGetClasses()
         }else{
             alert("Error entering class creation information");
         }
@@ -147,7 +216,7 @@ class ProfessorPage extends Component {
 
         axios.post('/api/v1/classes/makeGroups/'+clCode, jForm)
             .then(makeGroupResponse => {
-                console.log("Response Below")
+                console.log("Response Below: Make Group")
                 console.log(makeGroupResponse)
                 if(makeGroupResponse.data.dbSelectionError)
                 {
@@ -157,40 +226,25 @@ class ProfessorPage extends Component {
                     alert(makeGroupResponse.data.dbError)
                 }
                 else{
-                    /* TODO: 
-                        1. Call and Update All Groups
-                        2. Reset the given state to empty
-                    */
+                    window.location.reload()
                     alert("Successful Group")
                 }
             })
             .catch(error => {
+                console.log("We got an error as well")
                 console.log(error.response)
             });
     
-    }
-
-    apiGetClassGroup()
-    {
-        /* TODO: 
-            1. Get Individual class value passed in 
-            2. While Wait for the response and pass the response back to what is needed
-        */
-       let classCode = 1;
-       axios.get('/api/v1/classes/allGroups/'+classCode)
-       .then(classGroupData => {
-               this.setState({ classGroupData: classGroupData.data })
-       });
     }
 
     structureGroupTable(groupList)
     {
         let tableHolder = [];
 
-        for (var pos = 0; pos < groupList.length(); pos++)
+        for (var pos = 0; pos < groupList.length; pos++)
         {
             tableHolder.push(
-                <tr>
+                <tr key={pos}>
                     <th scope="row">{groupList[pos].group_code}</th>
                     <td>{groupList[pos].class_code}</td>
                     <td>{groupList[pos].group_name}</td>
@@ -216,78 +270,6 @@ class ProfessorPage extends Component {
             </tbody>
         </table>
         )
-    }
-
-    structureClasses()
-    {
-        let classHolder = []
-        let tempClassList = this.state.classList;
-        if (this.state.classList.length === 0)
-        {
-            classHolder.push(
-                <div key={0}> No Current Classes. Use the Button Above to Create One </div>
-            )
-        }else{
-            for (var pos = 0; pos < tempClassList.length; pos++)
-            {
-                let tempInputName = "prName"+pos;
-                axios.get('/api/v1/classes/allGroups/'+tempClassList[pos].class_code)
-                    .then(response => {
-                        console.log("Response Below: All Groups")
-                        console.log(response)
-                        if(response.data.dbError)
-                        {
-                            console.log(response.data.dbError)
-                        }else{
-                            console.log("Fuck Me")
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error.response)
-                    });
-                    classHolder.push(
-                        <div key={pos} className="card text-center">
-                            <div className="card-header">
-                                <div className="row">
-                                    <h6>Class Name: {tempClassList[pos].class_name}</h6>
-                                </div>
-                                <div className="row">
-                                    Class Code: {tempClassList[pos].class_code}
-                                </div>
-                            </div>
-                            <div className="card-body">
-                                <div className="row">
-                                    <div className="col">
-                                        <div className="card-text">There are no Current Groups</div>
-                                        <h5 className="card-title">Special title treatment</h5>
-                                    </div>
-                                    <div className="col">
-                                        <Form>
-                                            <FormGroup>
-                                                <Label for="pName">Project Name</Label>
-                                                {/* <Input type="text" name="prName" id="pName" onChange={(e) => this.setState({projectName: e.target.value})} placeholder="Group Project" /> */}
-                                                <Input type="text" name={tempInputName} id={tempInputName} onChange={(e) => this.setState({[e.target.name]: e.target.value})} placeholder="Group Project" />
-                                            </FormGroup>
-                                            <Button name={tempInputName} data-clname={tempClassList[pos].class_name} data-clcode={tempClassList[pos].class_code} color="info" size="lg" onClick={(e) => this.apiCreateGroup(e.target.name, e.target.dataset.clname, e.target.dataset.clcode)} block>Create Group</Button>
-                                        </Form>   
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card-footer text-muted">
-                                <div className="row">
-                                    Professor ID: {tempClassList[pos].professor_id}
-                                </div>
-                                <div className="row">
-                                    Creation Date: {tempClassList[pos].created_at}
-                                </div>
-                            </div>
-                        </div>
-                    )
-            }
-
-        }
-
-        return classHolder;
     }
 
     structureModalQuestions(formType)
@@ -410,7 +392,7 @@ class ProfessorPage extends Component {
                     </div>
                 </div>
 
-                {this.structureClasses()}
+                {this.state.classRoomDisplay}
 
                 <div className="modal fade addQ" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-lg">
