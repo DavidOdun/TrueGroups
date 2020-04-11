@@ -9,6 +9,7 @@ class ProfessorPage extends Component {
     {
         super(props)        
         this.state = {
+            allClassGroups: [],
             className:"",
             classSize:"",
             classList: [],
@@ -182,6 +183,41 @@ class ProfessorPage extends Component {
        });
     }
 
+    structureGroupTable(groupList)
+    {
+        let tableHolder = [];
+
+        for (var pos = 0; pos < groupList.length(); pos++)
+        {
+            tableHolder.push(
+                <tr>
+                    <th scope="row">{groupList[pos].group_code}</th>
+                    <td>{groupList[pos].class_code}</td>
+                    <td>{groupList[pos].group_name}</td>
+                    <td>{groupList[pos].class_name}</td>
+                    <td>{groupList[pos].project_name}</td>
+                </tr>
+            )
+        }
+
+        return(
+            <table className="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">G-Code</th>
+                <th scope="col">C-Code</th>
+                <th scope="col">G-Name</th>
+                <th scope="col">C-Name</th>
+                <th scope="col">Pr-Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {tableHolder}
+            </tbody>
+        </table>
+        )
+    }
+
     structureClasses()
     {
         let classHolder = []
@@ -199,6 +235,12 @@ class ProfessorPage extends Component {
                     .then(response => {
                         console.log("Response Below: All Groups")
                         console.log(response)
+                        if(response.data.dbError)
+                        {
+                            console.log(response.data.dbError)
+                        }else{
+                            console.log("Fuck Me")
+                        }
                     })
                     .catch(error => {
                         console.log(error.response)
@@ -216,7 +258,7 @@ class ProfessorPage extends Component {
                             <div className="card-body">
                                 <div className="row">
                                     <div className="col">
-                                        <p className="card-text">There are no Current Groups</p>
+                                        <div className="card-text">There are no Current Groups</div>
                                         <h5 className="card-title">Special title treatment</h5>
                                     </div>
                                     <div className="col">
