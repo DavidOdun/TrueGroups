@@ -131,17 +131,42 @@ class ProfessorPage extends Component {
         }
     }
 
-    apiMakeGroup()
+    apiCreateGroup(indexValue, clName, clCode)
     {
-        /* TODO: 
+        /* 
             1. Get Individual class value passed in 
             2. While Wait for the response and pass the response back to what is needed
         */
-        let classCode = 1;
-        axios.post('/api/v1/classes/makeGroups/'+classCode)
-        .then(makeGroupData => {
-                this.setState({ makeGroupData : makeGroupData.data })
-        });
+
+        let project_name = this.state[indexValue];
+        let jForm = {
+            "class_name": clName,
+            "project_name": project_name
+        }
+
+        axios.post('/api/v1/classes/makeGroups/'+clCode, jForm)
+            .then(makeGroupResponse => {
+                console.log("Response Below")
+                console.log(makeGroupResponse)
+                if(makeGroupResponse.data.dbSelectionError)
+                {
+                    alert(makeGroupResponse.data.dbSelectionError)
+                }else if (makeGroupResponse.data.dbError)
+                {
+                    alert(makeGroupResponse.data.dbError)
+                }
+                else{
+                    /* TODO: 
+                        1. Call and Update All Groups
+                        2. Reset the given state to empty
+                    */
+                    alert("Successful Group")
+                }
+            })
+            .catch(error => {
+                console.log(error.response)
+            });
+    
     }
 
     apiGetClassGroup()
@@ -169,7 +194,8 @@ class ProfessorPage extends Component {
         }else{
             for (var pos = 0; pos < tempClassList.length; pos++)
             {
-                axios.get('/api/v1/classes/allGroups/'+tempClassList[0].class_code)
+                let tempInputName = "prName"+pos;
+                axios.get('/api/v1/classes/allGroups/'+tempClassList[pos].class_code)
                     .then(response => {
                         console.log("Response Below: All Groups")
                         console.log(response)
@@ -197,9 +223,10 @@ class ProfessorPage extends Component {
                                         <Form>
                                             <FormGroup>
                                                 <Label for="pName">Project Name</Label>
-                                                <Input type="text" name="prName" id="pName" onChange={(e) => this.setState({projectName: e.target.value})} placeholder="Group Project" />
+                                                {/* <Input type="text" name="prName" id="pName" onChange={(e) => this.setState({projectName: e.target.value})} placeholder="Group Project" /> */}
+                                                <Input type="text" name={tempInputName} id={tempInputName} onChange={(e) => this.setState({[e.target.name]: e.target.value})} placeholder="Group Project" />
                                             </FormGroup>
-                                            <Button color="info" size="lg" onClick={() => this.apiCreateClass()} block>Create Class</Button>
+                                            <Button name={tempInputName} data-clname={tempClassList[pos].class_name} data-clcode={tempClassList[pos].class_code} color="info" size="lg" onClick={(e) => this.apiCreateGroup(e.target.name, e.target.dataset.clname, e.target.dataset.clcode)} block>Create Group</Button>
                                         </Form>   
                                     </div>
                                 </div>
@@ -268,7 +295,7 @@ class ProfessorPage extends Component {
         {
             return <Redirect to={{ pathname: this.state.pageRedirect, state: {userInfo : this.state.userInfo }}}/>
         }
-
+        console.log("Showing State Below")
         console.log(this.state)
         return (
             <div>
