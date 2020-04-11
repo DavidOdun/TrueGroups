@@ -134,7 +134,7 @@ class SignInPage extends Component {
 					<h1>True Groups</h1>
 					<div></div>
 				</nav>
-				<div className="container">
+				<div className="container mt-3">
 					<Form>
 						<div style={{ fontSize: 12, color: "red" }}>
 							{this.state.email_error}
