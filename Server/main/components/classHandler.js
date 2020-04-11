@@ -187,6 +187,17 @@ const createGroups = (req, res, db) => {
                 console.log("There are no students in a class with this class_code");
                 res.json({dbSelectionError: 'There are no students in a class with this class_code: ' + class_code})
             } else {
+                // First we need to clear all existing groups
+                db.from(GROUPS_TABLE).where({class_code: class_code}).del()
+                    .then((rows) => {console.log(rows);})
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
+                db.from(GROUP_MEMBERS_TABLE).where({class_code: class_code}).del()
+                    .then((rows) => {console.log(rows);})
+                    .catch(err => {console.log(err);});
+
                 // Once you have the students, do some operation on them to create the groupings.
                 groupings = generateGroups(students, 3);
 
@@ -291,7 +302,7 @@ const getStudentsClassGroup = (req, res, db) => {
                         } else {
                             // The group that is returned will have a group code. This group code can be used to get the other
                             // other students belonging to that group.
-                            res.json(groups)
+                            res.json(groups);
                         }
                     })
                     .catch(err => {
