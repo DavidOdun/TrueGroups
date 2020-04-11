@@ -30,20 +30,22 @@ class SignInPage extends Component {
                 "email": this.state.email,
                 "password": this.state.password 
             }
-
-            let response = await axios.post('/api/v1/users/authenticate', jForm)
-            
-            if (response.data.dbError)
-            {
-                alert(response.data.dbError)
-                e_error = response.data.dbError;
-            }else if (response.data.error){
-                alert(response.data.error);
-                p_error = response.data.error;
-            }else{
-                alert("Login Successful!")
-                p_redirect = true
-                response_data = response.data;
+            try {
+                let response = await axios.post('/api/v1/users/authenticate', jForm)    
+                if (response.data.dbError)
+                {
+                    alert(response.data.dbError)
+                    e_error = response.data.dbError;
+                }else if (response.data.error){
+                    alert(response.data.error);
+                    p_error = response.data.error;
+                }else{
+                    alert("Login Successful!")
+                    p_redirect = true
+                    response_data = response.data;
+                }
+            } catch (error) {
+               alert(error + "\nUser Does Not Exist")
             }
         }else{
             if (!this.state.email || !this.state.email.includes("@") || !this.state.email.includes(".") || this.state.email.length < 5) 
