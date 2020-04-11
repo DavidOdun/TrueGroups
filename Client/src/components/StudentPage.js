@@ -115,10 +115,15 @@ class StudentPage extends Component {
                     console.log("currentClassDetails")
                     console.log(currentClassDetails)
 
+                    let structureTable = [];
                     try{
                         let currentGroupDetails = await axios.get('api/v1/classes/students/'+classCode+'/'+this.state.userInfo.id)
                         console.log("currentGroupDetails")
                         console.log(currentGroupDetails)
+                        if (currentGroupDetails.data.length !== 0)
+                        {
+                            structureTable = this.structureGroupTable(currentGroupDetails.data);
+                        }
                     } catch(err){
                         console.log(err)
                     }
@@ -129,8 +134,13 @@ class StudentPage extends Component {
                                 Class Name: {currentClassDetails.data[0].class_name}
                             </div>
                             <div className="card-body">
-                                <h5 className="card-title">Special title treatment</h5>
-                                <p className="card-text">There are no Current Groups</p>
+                                <div className="card-text">
+                                    {
+                                        structureTable.length === 0 ?
+                                        <h5> There are currenly No Created Groups for this class</h5> :
+                                        structureTable
+                                    }
+                                </div>
                             </div>
                             <div className="card-footer text-muted">
                                 Professor ID: {currentClassDetails.data[0].professor_id}
@@ -142,11 +152,41 @@ class StudentPage extends Component {
                     console.log(err)
                 }
             }
+            this.setState({classDisplayList: classPageUI})
         }catch(err){
             console.log(err)
         }
+    }
 
-        this.setState({classDisplayList: classPageUI})
+    structureGroupTable(groupList)
+    {
+        let tableHolder = [];
+
+        for (var pos = 0; pos < groupList.length; pos++)
+        {
+            tableHolder.push(
+                <tr key={pos}>
+                    <th scope="row">{groupList[pos].group_code}</th>
+                    <td>{groupList[pos].class_code}</td>
+                    <td>{groupList[pos].member_id}</td>
+                </tr>
+            )
+        }
+
+        return(
+            <table className="table table-striped">
+            <thead>
+                <tr>
+                <th scope="col">GroupCode</th>
+                <th scope="col">ClassCode</th>
+                <th scope="col">MemberId</th>
+                </tr>
+            </thead>
+            <tbody>
+                {tableHolder}
+            </tbody>
+        </table>
+        )
     }
 
     structureModalQuestions()
@@ -237,7 +277,7 @@ class StudentPage extends Component {
 
                 <div className="row">
                     <div className="col">
-                        {this.state.classDisplayList.length === 0 ?
+                        {this.state.classDisplayList.length !== 0 ?
                             this.state.classDisplayList :
                             <div> No Current Class. Join a Class Above</div>
                         }
