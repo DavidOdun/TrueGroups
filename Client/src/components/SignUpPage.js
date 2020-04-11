@@ -198,7 +198,7 @@ class SignUpPage extends Component {
 					<h1>True Groups</h1>
 					<div></div>
 				</nav>
-				<div className="container">
+				<div className="container mt-3 mb-3">
 					{this.state.page_alert ? (
 						<div>
 							<UncontrolledAlert color="danger" fade={false}>
