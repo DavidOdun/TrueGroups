@@ -298,7 +298,7 @@ class SignUpPage extends Component {
 										preferredname: e.target.value,
 									})
 								}
-								placeholder="prefferred name"
+								placeholder="preferred name"
 							/>
 						</FormGroup>
 						<div style={{ fontSize: 12, color: "red" }}>
