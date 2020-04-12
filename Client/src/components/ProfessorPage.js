@@ -47,8 +47,6 @@ class ProfessorPage extends Component {
         let classHolder = []
         try{
             let classResponse = await axios.get('/api/v1/classes/allClasses/'+this.state.userInfo.id)
-            console.log("Response Below: classResponse ")
-            console.log(classResponse)
             let tempClassList = classResponse.data;
             if(tempClassList.length !== 0)
             {
@@ -56,9 +54,6 @@ class ProfessorPage extends Component {
                 {
                         let tempInputName = "prName"+pos;
                         let currentClassGroup = await axios.get('/api/v1/classes/allGroups/'+tempClassList[pos].class_code)
-                        console.log("Response Below: currentClassGroup "+ pos)
-                        console.log(currentClassGroup);
-
                         let structuredTable = [];
                         if(currentClassGroup.data.dbError)
                         {
@@ -112,7 +107,6 @@ class ProfessorPage extends Component {
                             </div>
                         )
                 }
-                console.log(classHolder);
                 this.setState({classRoomDisplay: classHolder, classList: classResponse.data})
             }else{
                 classHolder.push(
@@ -120,30 +114,27 @@ class ProfessorPage extends Component {
                 )
             }
         }catch(err){
-            console.log(err)
+            alert(err)
         }
     }
     
     apiCallDeleteQuestions()
     {
-        console.log("Called Deleted Questions")
         if (this.state.userDeletedQuestions.length === 0)
         {
             alert("No Value Selected.")
         }else{
-            console.log("THERE IS SOMETHING BEING CALLED")
             for(var pos = 0; pos < this.state.userDeletedQuestions.length; pos++)
             {
                 axios.post('/api/v1/questions/remove/'+this.state.userDeletedQuestions[pos])
                 .then(addResponse => {
-                    console.log("Response Below")
                     console.log(addResponse)
+                    alert("Delete: Submit Succesfully Completed!")
                 })
                 .catch(error => {
-                    console.log(error.response)
+                    alert(error.response)
                 });
             }   
-            alert("Delete: Submit Succesfully Completed!")
         }
         this.apiCallGetQuestions()    
     }
@@ -162,21 +153,18 @@ class ProfessorPage extends Component {
             } 
             axios.post('/api/v1/questions/add',tempForm)
                 .then(addResponse => {
-                    console.log("Response Below")
                     console.log(addResponse)
+                    alert("Add: Submit Succesfully Completed!")
                 })
                 .catch(error => {
-                    console.log(error.response)
+                    alert(error.response)
                 });
         }
-
-        alert("Add: Submit Succesfully Completed!")
         this.apiCallGetQuestions()    
     }
 
     apiCreateClass()
     {
-        console.log("About to create the classes")
         if ((this.state.classSize > 0) && this.state.className)
         {
             let jForm = {
@@ -187,14 +175,13 @@ class ProfessorPage extends Component {
 
             axios.put('/api/v1/classes/create',jForm)
                 .then(addResponse => {
-                    console.log("Response Below")
                     console.log(addResponse)
                     this.apiCallGetClasses()
                     alert("Classes Succesfully Created!")
                     window.location.reload()
                 })
                 .catch(error => {
-                    console.log(error.response)
+                    alert(error.response)
                 });
         }else{
             alert("Error entering class creation information");
@@ -216,8 +203,6 @@ class ProfessorPage extends Component {
 
         axios.post('/api/v1/classes/makeGroups/'+clCode, jForm)
             .then(makeGroupResponse => {
-                console.log("Response Below: Make Group")
-                console.log(makeGroupResponse)
                 if(makeGroupResponse.data.dbSelectionError)
                 {
                     alert(makeGroupResponse.data.dbSelectionError)
@@ -231,7 +216,6 @@ class ProfessorPage extends Component {
                 }
             })
             .catch(error => {
-                console.log("We got an error as well")
                 console.log(error.response)
             });
     
@@ -319,8 +303,6 @@ class ProfessorPage extends Component {
         {
             return <Redirect to={{ pathname: this.state.pageRedirect, state: {userInfo : this.state.userInfo }}}/>
         }
-        console.log("Showing State Below")
-        console.log(this.state)
         return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">
