@@ -68,10 +68,8 @@ class EditPage extends Component {
     }
 
     render() {
-        console.log(this.state)
         if (this.state.pageRedirect)
         {
-            console.log("Found Page Redirect True");
             return <Redirect to ={this.state.pageRedirect} />
         }
       return (

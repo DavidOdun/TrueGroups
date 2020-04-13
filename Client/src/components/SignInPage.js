@@ -50,12 +50,10 @@ class SignInPage extends Component {
         }else{
             if (!this.state.email || !this.state.email.includes("@") || !this.state.email.includes(".") || this.state.email.length < 5) 
             {
-                console.log("No Email Entered!");
                 e_error = "Error Entering Email Address";
             }
             if (!this.state.password)
             {
-                console.log("No Password Entered!")
                 p_error = "Error Entering Password";
             }
         }
@@ -72,8 +70,6 @@ class SignInPage extends Component {
             b. Notify and redirect to current page on failed login
     */
     render() {
-        console.log("Showing State for the user")
-        console.log(this.state)
         if (this.state.private_redirect)
         {
             /* TODO: Make a private route */

@@ -43,7 +43,6 @@ class StudentPage extends Component {
 
     apiJoinClass()
     {
-        // console.log("About to join the classes")
         if ((this.state.professorId > 0) && this.state.className)
         {
             let jForm = {
@@ -54,8 +53,6 @@ class StudentPage extends Component {
 
             axios.post('/api/v1/classes/join',jForm)
                 .then(addResponse => {
-                    // console.log("Response Below")
-                    // console.log(addResponse)
                     if (addResponse.data.success)
                     {
                         alert("Classes Succesfully Joined!")
@@ -64,7 +61,6 @@ class StudentPage extends Component {
                     }
                 })
                 .catch(error => {
-                    // console.log(error.response)
                     alert(error.response.data.dbError)
                 });            
         }else{
@@ -74,19 +70,14 @@ class StudentPage extends Component {
 
     apiSubmitSurvey()
     {
-        console.log("Submitting Survey");
         /* API-Call to submit survey  -----> axios.post('api/v1/users/update/survey/:username') */
         if (Object.keys(this.state.surveyResponses).length === this.state.surveyQuestions.length)
         {
-            console.log("All Questions answered")
-            let jForm = JSON.stringify(this.state.surveyResponses)
-            console.log(jForm)
             axios.post('/api/v1/users/update/survey/'+this.state.userInfo.user_name, this.state.surveyResponses)
                 .then(qRes => {
-                    console.log("Response Below")
                     console.log(qRes)
+                    alert("Survey Submitted Succesfully")
                 });
-                alert("Survey Submitted Succesfully")
                 if (!this.state.completedSurvey)
                 {
                     this.setState({completedSurvey: true})
@@ -103,29 +94,20 @@ class StudentPage extends Component {
         //axios.get('api/v1/classes/enrolled/'+this.state.userInfo.id)
         try{
             let enrolledClassList = await axios.get('api/v1/classes/enrolled/'+this.state.userInfo.id)
-            console.log("Enrolled Class List")
-            console.log(enrolledClassList)
-
             for (var pos = 0; pos < enrolledClassList.data.length; pos++)
             {
-                console.log(enrolledClassList.data[pos].class_code)
                 try{   
                     var classCode = enrolledClassList.data[pos].class_code.toString();
                     let currentClassDetails = await axios.get('api/v1/classes/details/'+classCode)
-                    console.log("currentClassDetails")
-                    console.log(currentClassDetails)
-
                     let structureTable = [];
                     try{
                         let currentGroupDetails = await axios.get('api/v1/classes/students/'+classCode+'/'+this.state.userInfo.id)
-                        console.log("currentGroupDetails")
-                        console.log(currentGroupDetails)
                         if (currentGroupDetails.data.length !== 0)
                         {
                             structureTable = this.structureGroupTable(currentGroupDetails.data);
                         }
                     } catch(err){
-                        console.log(err)
+                        alert(err)
                     }
                     /* TODO: Move this above to the last try and check to see if there is any list given back */
                     classPageUI.push(
@@ -149,12 +131,12 @@ class StudentPage extends Component {
                     )
                     
                 }catch(err){
-                    console.log(err)
+                    alert(err)
                 }
             }
             this.setState({classDisplayList: classPageUI})
         }catch(err){
-            console.log(err)
+            alert(err)
         }
     }
 
@@ -226,7 +208,6 @@ class StudentPage extends Component {
         /* Block Complete Survey Buttons */
         var surveyButton = <button type="button" className="btn btn-info btn-lg btn-block" data-toggle="modal" data-target=".bd-example-modal-lg">Complete User Survey!</button>
         var joinClass = <button type="button" className="btn btn-info btn-lg btn-block" data-toggle="collapse" data-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">Join a Class</button>
-        console.log(this.state)
         return (
             <div>
                 <nav className="navbar navbar-light bg-light justify-content-between">

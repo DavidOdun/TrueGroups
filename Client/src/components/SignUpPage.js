@@ -110,15 +110,12 @@ class SignUpPage extends Component {
 
     async handleSubmit()
     {
-        console.log("In the Handle Submit Function");
         /* Check Validity of all the user entered */
         const isValid = this.validateForm();
 
         /* Valid: True */
         if (isValid)
         {
-            console.log("The entire Form was valid!")
-
             /* Make API call with valid entry form */
             let response = await axios.put('/api/v1/users/create',
                 {
@@ -133,27 +130,21 @@ class SignUpPage extends Component {
                 }
             )
 
-            /* Check API Response to entire*/
-            console.log("Response: ")
-            console.log(response.data)
-
             /* Bad API Response: Alert the Page, Reset the State and Entire field*/
             if (response.data.dbError)
             {
-                console.log(response.data.dbError);
                 this.setState({page_alert: response.data.dbError, username_error: "Invalid username entered"})
             }
             else /* Good API Response: Push to specific user profile page*/
             { 
                 alert("Welcome! New User Added: " + this.state.username)
                 // TODO: Push to Private Route
-                console.log("About to Redirect")
                 this.setState({page_redirect : true})
             }
             
        
         }else{
-            console.log("Parts of the form were invalid!")
+            alert("Parts of the form were invalid!")
             this.render()
         }
 
@@ -166,11 +157,8 @@ class SignUpPage extends Component {
         4. Notification for Created Profile
     */
     render() {
-        console.log("In the Render Function");
-        console.log(this.state)
         if (this.state.page_redirect)
         {
-            console.log("Found Page Redirect True");
             return <Redirect to='/signin' />
         }
       return (
