@@ -48,7 +48,7 @@ class StudentPage extends Component {
             let jForm = {
                 "professor_id": this.state.professorId,
                 "class_name": this.state.className,
-                "user_name": this.state.userInfo.id
+                "user_id": this.state.userInfo.id
             }
 
             axios.post('/api/v1/classes/join',jForm)
