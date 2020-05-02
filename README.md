@@ -27,12 +27,12 @@ to start the frontend cliend, run `npm install` and `npm start` in the `Client/`
 To test the backend, run `npm run test` in the `Server/` directory.
 
 ## Contributing
-We know that this product can only be as good as the developers building it, which
-is why we ask for your contribution. To contribute, you can either file a ticket, or
-you can clone the repo, make your changes and purpose a Pull Request. 
+We know that this product can only be as good as the developers building it, which is why we ask for your contribution. To contribute, you can either file a ticket, or you can clone the repo, make your changes and purpose a Pull Request. 
 
-Task Board: 
-https://trello.com/b/ijCxFSVn/application-development
+[Task Board](https://trello.com/b/ijCxFSVn/application-development)
+[API Endpoint Documentation](https://docs.google.com/document/d/1c9B8IwUT-2VJXk5S4L_12Mc_8ByUoytpj7zZzN_lGA0/edit?usp=sharing)
+[Blog Posts](https://davidodun.github.io/TrueGroups/blog/)
+
 
 
 ## License
